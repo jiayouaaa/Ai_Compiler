@@ -1,0 +1,100 @@
+Start testing: Mar 09 01:05 �й���׼ʱ��
+----------------------------------------------------------
+1/1 Testing: self_compiler_smoke
+1/1 Test: self_compiler_smoke
+Command: "D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw/self_compiler_cli.exe" "--mode" "demo"
+Directory: D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw
+"self_compiler_smoke" start time: Mar 09 01:05 �й���׼ʱ��
+Output:
+----------------------------------------------------------
+==== 高层图 ====
+图结构导出
+张量列表：
+  [T0] input_ids shape=[1, 16] dtype=i32
+  [T1] hidden_states shape=[1, 16, 2048] dtype=bf16
+  [T2] block_output shape=[1, 16, 2048] dtype=bf16
+  [T3] logits shape=[1, 16, 128256] dtype=bf16
+算子列表：
+  [O0] input kind=Input inputs= outputs= T0
+  [O1] embedding kind=Embedding inputs= T0 outputs= T1
+  [O2] transformer_block_0 kind=TransformerBlock inputs= T1 outputs= T2
+  [O3] lm_head kind=LmHead inputs= T2 outputs= T3
+  [O4] output kind=Output inputs= T3 outputs=
+
+==== Lowering 之后的图 ====
+图结构导出
+张量列表：
+  [T0] input_ids shape=[1, 16] dtype=i32
+  [T1] hidden_states shape=[1, 16, 2048] dtype=bf16
+  [T2] block_output shape=[1, 16, 2048] dtype=bf16
+  [T3] logits shape=[1, 16, 128256] dtype=bf16
+算子列表：
+  [O0] input kind=Input inputs= outputs= T0
+  [O1] embedding kind=Embedding inputs= T0 outputs= T1
+  [O2] transformer_block_0.rmsnorm0 kind=RmsNorm inputs= T1 outputs= T2
+  [O3] transformer_block_0.qkv kind=QkvProject inputs= T1 outputs= T2
+  [O4] transformer_block_0.rope kind=Rope inputs= T1 outputs= T2
+  [O5] transformer_block_0.attention kind=Attention inputs= T1 outputs= T2
+  [O6] transformer_block_0.residual0 kind=ResidualAdd inputs= T1 outputs= T2
+  [O7] transformer_block_0.rmsnorm1 kind=RmsNorm inputs= T1 outputs= T2
+  [O8] transformer_block_0.swiglu kind=SwiGLU inputs= T1 outputs= T2
+  [O9] transformer_block_0.residual1 kind=ResidualAdd inputs= T1 outputs= T2
+  [O10] lm_head kind=LmHead inputs= T2 outputs= T3
+  [O11] output kind=Output inputs= T3 outputs=
+
+==== 静态内存规划 ====
+total_bytes=4235328 peak_bytes=4235328
+  input_ids offset=0 size=64
+  hidden_states offset=64 size=65536
+  block_output offset=65600 size=65536
+  logits offset=131136 size=4104192
+
+==== Toy Backend 命令流 ====
+ALLOC input_ids 0 64
+ALLOC hidden_states 64 65536
+ALLOC block_output 65600 65536
+ALLOC logits 131136 4104192
+EXEC input Input
+EXEC embedding Embedding
+EXEC transformer_block_0.rmsnorm0 RmsNorm
+EXEC transformer_block_0.qkv QkvProject
+EXEC transformer_block_0.rope Rope
+EXEC transformer_block_0.attention Attention
+EXEC transformer_block_0.residual0 ResidualAdd
+EXEC transformer_block_0.rmsnorm1 RmsNorm
+EXEC transformer_block_0.swiglu SwiGLU
+EXEC transformer_block_0.residual1 ResidualAdd
+EXEC lm_head LmHead
+EXEC output Output
+
+==== MLIR Bridge 占位输出 ====
+// MLIR bridge 占位骨架
+// 当前模式：仅提供占位输出，核心工程无需依赖 MLIR 即可构建。
+// 后续方向：
+//   1. 为高层 TransformerBlock 定义 self_compiler 方言。
+//   2. lowering 到 func/arith/tensor/memref/scf 或 toy accelerator 方言。
+//   3. 复用 MLIR 的 canonicalization 与 conversion pass 基础设施。
+
+module {
+  // 算子: input kind=Input
+  // 算子: embedding kind=Embedding
+  // 算子: transformer_block_0.rmsnorm0 kind=RmsNorm
+  // 算子: transformer_block_0.qkv kind=QkvProject
+  // 算子: transformer_block_0.rope kind=Rope
+  // 算子: transformer_block_0.attention kind=Attention
+  // 算子: transformer_block_0.residual0 kind=ResidualAdd
+  // 算子: transformer_block_0.rmsnorm1 kind=RmsNorm
+  // 算子: transformer_block_0.swiglu kind=SwiGLU
+  // 算子: transformer_block_0.residual1 kind=ResidualAdd
+  // 算子: lm_head kind=LmHead
+  // 算子: output kind=Output
+}
+<end of output>
+Test time =   0.05 sec
+----------------------------------------------------------
+Test Passed.
+"self_compiler_smoke" end time: Mar 09 01:05 �й���׼ʱ��
+"self_compiler_smoke" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Mar 09 01:05 �й���׼ʱ��

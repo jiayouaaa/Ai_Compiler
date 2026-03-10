@@ -1,0 +1,35 @@
+﻿{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "core-debug",
+      "displayName": "核心调试（不启用 MLIR）",
+      "generator": "MinGW Makefiles",
+      "binaryDir": "${sourceDir}/build/core-debug-mingw",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "SELF_COMPILER_ENABLE_MLIR": "OFF"
+      }
+    },
+    {
+      "name": "mlir-debug",
+      "displayName": "MLIR 调试",
+      "generator": "MinGW Makefiles",
+      "binaryDir": "${sourceDir}/build/mlir-debug-mingw",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "SELF_COMPILER_ENABLE_MLIR": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "build-core-debug",
+      "configurePreset": "core-debug"
+    },
+    {
+      "name": "build-mlir-debug",
+      "configurePreset": "mlir-debug"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw/CMakeFiles/self_compiler_core.dir
+D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw/CMakeFiles/self_compiler_cli.dir
+D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw/CMakeFiles/test.dir
+D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw/CMakeFiles/edit_cache.dir
+D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw/CMakeFiles/rebuild_cache.dir
