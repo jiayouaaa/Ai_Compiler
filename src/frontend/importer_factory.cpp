@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "self_compiler/frontend/json_importer.h"
+#include "self_compiler/frontend/llama_config_importer.h"
 #include "self_compiler/frontend/onnx_importer.h"
 
 namespace self_compiler::frontend {
@@ -28,6 +29,7 @@ bool EndsWith(const std::string& text, const std::string& suffix) {
 InputFormat ImporterFactory::ParseFormat(const std::string& text) {
     const std::string lower = ToLower(text);
     if (lower == "spec") return InputFormat::kSpec;
+    if (lower == "llama_config" || lower == "llama") return InputFormat::kLlamaConfig;
     if (lower == "json") return InputFormat::kJson;
     if (lower == "onnx") return InputFormat::kOnnx;
     if (lower == "tflite") return InputFormat::kTFLite;
@@ -38,6 +40,7 @@ InputFormat ImporterFactory::ParseFormat(const std::string& text) {
 
 InputFormat ImporterFactory::InferFormatFromPath(const std::string& path) {
     const std::string lower = ToLower(path);
+    if (EndsWith(lower, "config.json")) return InputFormat::kLlamaConfig;
     if (EndsWith(lower, ".json")) return InputFormat::kJson;
     if (EndsWith(lower, ".onnx")) return InputFormat::kOnnx;
     if (EndsWith(lower, ".tflite")) return InputFormat::kTFLite;
@@ -48,6 +51,8 @@ InputFormat ImporterFactory::InferFormatFromPath(const std::string& path) {
 
 std::unique_ptr<Importer> ImporterFactory::Create(InputFormat format) {
     switch (format) {
+        case InputFormat::kLlamaConfig:
+            return std::make_unique<LlamaConfigImporter>();
         case InputFormat::kJson:
             return std::make_unique<JsonImporter>();
         case InputFormat::kOnnx:

@@ -1,13 +1,17 @@
-#include "self_compiler/passes/canonicalize_pass.h"
+﻿#include "self_compiler/passes/canonicalize_pass.h"
 
 #include <cctype>
+#include <cstddef>
 #include <limits>
 #include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
+#include <algorithm>
 
 namespace {
+
+int Attr_Stoi(const std::string& text);
 
 self_compiler::Status CheckTensorId(const self_compiler::ir::Graph& graph) {
     const auto& tensors = graph.tensors();
@@ -26,6 +30,29 @@ self_compiler::Status CheckTensorId(const self_compiler::ir::Graph& graph) {
                 return self_compiler::Status::Error(
                     op.name + ": Invalid tensor ID in operation outputs: " + std::to_string(output_tensor_id));
             }
+        }
+    }
+
+    return self_compiler::Status::Ok();
+}
+
+self_compiler::Status CheckGraphObjectIds(const self_compiler::ir::Graph& graph) {
+    const auto& tensors = graph.tensors();
+    const auto& operations = graph.operations();
+
+    for (std::size_t index = 0; index < tensors.size(); ++index) {
+        if (tensors[index].id != static_cast<int>(index)) {
+            return self_compiler::Status::Error(
+                "Tensor index " + std::to_string(index) +
+                " does not match tensor.id " + std::to_string(tensors[index].id));
+        }
+    }
+
+    for (std::size_t index = 0; index < operations.size(); ++index) {
+        if (operations[index].id != static_cast<int>(index)) {
+            return self_compiler::Status::Error(
+                "Operation index " + std::to_string(index) +
+                " does not match op.id " + std::to_string(operations[index].id));
         }
     }
 
@@ -91,6 +118,206 @@ self_compiler::Status CheckOpArity(const self_compiler::ir::Operation& op) {
                 op.name + ": operation should have exactly 1 output, but has " +
                 std::to_string(actual_output_count));
         }
+    }
+
+    return self_compiler::Status::Ok();
+}
+
+bool HasTensorRank(const self_compiler::ir::Tensor& tensor, std::size_t expected_rank) {
+    return tensor.shape.dims.size() == expected_rank;
+}
+
+self_compiler::Status CheckSameDType(
+    const self_compiler::ir::Operation& op,
+    const self_compiler::ir::Tensor& lhs,
+    const self_compiler::ir::Tensor& rhs,
+    const std::string& lhs_label,
+    const std::string& rhs_label) {
+    if (lhs.dtype != rhs.dtype) {
+        return self_compiler::Status::Error(
+            op.name + ": " + lhs_label + " dtype " +
+            self_compiler::ir::ToString(lhs.dtype) + " does not match " +
+            rhs_label + " dtype " + self_compiler::ir::ToString(rhs.dtype));
+    }
+    return self_compiler::Status::Ok();
+}
+
+self_compiler::Status CheckSameShape(
+    const self_compiler::ir::Operation& op,
+    const self_compiler::ir::Tensor& lhs,
+    const self_compiler::ir::Tensor& rhs,
+    const std::string& lhs_label,
+    const std::string& rhs_label) {
+    if (lhs.shape.dims != rhs.shape.dims) {
+        return self_compiler::Status::Error(
+            op.name + ": " + lhs_label + " shape " + lhs.shape.ToString() +
+            " does not match " + rhs_label + " shape " + rhs.shape.ToString());
+    }
+    return self_compiler::Status::Ok();
+}
+
+self_compiler::Status CheckOpTensorSemantics(
+    const self_compiler::ir::Operation& op,
+    const self_compiler::ir::Graph& graph) {
+    const auto& tensors = graph.tensors();
+
+    auto get_input = [&](std::size_t index) -> const self_compiler::ir::Tensor& {
+        return tensors[static_cast<std::size_t>(op.inputs[index])];
+    };
+    auto get_output = [&](std::size_t index) -> const self_compiler::ir::Tensor& {
+        return tensors[static_cast<std::size_t>(op.outputs[index])];
+    };
+
+    if (op.kind == self_compiler::ir::OpKind::kInput) {
+        const auto& output = get_output(0);
+        if (!HasTensorRank(output, 2)) {
+            return self_compiler::Status::Error(
+                op.name + ": Input output tensor should have rank 2, but has rank " +
+                std::to_string(output.shape.dims.size()));
+        }
+        if (output.dtype != self_compiler::ir::DataType::kInt32) {
+            return self_compiler::Status::Error(
+                op.name + ": Input output tensor should have dtype i32, but has " +
+                self_compiler::ir::ToString(output.dtype));
+        }
+        return self_compiler::Status::Ok();
+    }
+
+    if (op.kind == self_compiler::ir::OpKind::kEmbedding) {
+        const auto& input = get_input(0);
+        const auto& output = get_output(0);
+
+        if (!HasTensorRank(input, 2)) {
+            return self_compiler::Status::Error(
+                op.name + ": Embedding input tensor should have rank 2, but has rank " +
+                std::to_string(input.shape.dims.size()));
+        }
+        if (!HasTensorRank(output, 3)) {
+            return self_compiler::Status::Error(
+                op.name + ": Embedding output tensor should have rank 3, but has rank " +
+                std::to_string(output.shape.dims.size()));
+        }
+        if (input.dtype != self_compiler::ir::DataType::kInt32) {
+            return self_compiler::Status::Error(
+                op.name + ": Embedding input tensor should have dtype i32, but has " +
+                self_compiler::ir::ToString(input.dtype));
+        }
+        if (output.dtype == self_compiler::ir::DataType::kInt32) {
+            return self_compiler::Status::Error(
+                op.name + ": Embedding output tensor should be a floating-point activation, but got i32");
+        }
+        if (input.shape.dims[0] != output.shape.dims[0] ||
+            input.shape.dims[1] != output.shape.dims[1]) {
+            return self_compiler::Status::Error(
+                op.name + ": Embedding should preserve batch/sequence dims, but input shape " +
+                input.shape.ToString() + " maps to output shape " + output.shape.ToString());
+        }
+        return self_compiler::Status::Ok();
+    }
+
+    if (op.kind == self_compiler::ir::OpKind::kTransformerBlock) {
+        const auto& input = get_input(0);
+        const auto& output = get_output(0);
+        if (!HasTensorRank(input, 3) || !HasTensorRank(output, 3)) {
+            return self_compiler::Status::Error(
+                op.name + ": TransformerBlock input/output tensors should both have rank 3");
+        }
+
+        auto shape_status = CheckSameShape(op, input, output, "input", "output");
+        if (!shape_status.ok) {
+            return shape_status;
+        }
+        auto dtype_status = CheckSameDType(op, input, output, "input", "output");
+        if (!dtype_status.ok) {
+            return dtype_status;
+        }
+
+        const int hidden_size = Attr_Stoi(op.attributes.find("hidden_size")->second);
+        if (input.shape.dims[2] != hidden_size) {
+            return self_compiler::Status::Error(
+                op.name + ": hidden_size attribute " + std::to_string(hidden_size) +
+                " does not match tensor hidden dim " + std::to_string(input.shape.dims[2]));
+        }
+        return self_compiler::Status::Ok();
+    }
+
+    if (op.kind == self_compiler::ir::OpKind::kLmHead) {
+        const auto& input = get_input(0);
+        const auto& output = get_output(0);
+        if (!HasTensorRank(input, 3) || !HasTensorRank(output, 3)) {
+            return self_compiler::Status::Error(
+                op.name + ": LmHead input/output tensors should both have rank 3");
+        }
+        if (input.shape.dims[0] != output.shape.dims[0] ||
+            input.shape.dims[1] != output.shape.dims[1]) {
+            return self_compiler::Status::Error(
+                op.name + ": LmHead should preserve batch/sequence dims, but input shape " +
+                input.shape.ToString() + " maps to output shape " + output.shape.ToString());
+        }
+        auto dtype_status = CheckSameDType(op, input, output, "input", "output");
+        if (!dtype_status.ok) {
+            return dtype_status;
+        }
+        return self_compiler::Status::Ok();
+    }
+
+    if (op.kind == self_compiler::ir::OpKind::kOutput) {
+        const auto& input = get_input(0);
+        if (input.shape.dims.empty()) {
+            return self_compiler::Status::Error(
+                op.name + ": Output input tensor should not have empty shape");
+        }
+        return self_compiler::Status::Ok();
+    }
+
+    if (op.kind == self_compiler::ir::OpKind::kResidualAdd) {
+        const auto& lhs = get_input(0);
+        const auto& rhs = get_input(1);
+        const auto& output = get_output(0);
+
+        auto lhs_rhs_shape = CheckSameShape(op, lhs, rhs, "input0", "input1");
+        if (!lhs_rhs_shape.ok) {
+            return lhs_rhs_shape;
+        }
+        auto lhs_rhs_dtype = CheckSameDType(op, lhs, rhs, "input0", "input1");
+        if (!lhs_rhs_dtype.ok) {
+            return lhs_rhs_dtype;
+        }
+        auto out_shape = CheckSameShape(op, lhs, output, "input0", "output");
+        if (!out_shape.ok) {
+            return out_shape;
+        }
+        auto out_dtype = CheckSameDType(op, lhs, output, "input0", "output");
+        if (!out_dtype.ok) {
+            return out_dtype;
+        }
+        return self_compiler::Status::Ok();
+    }
+
+    if (op.kind == self_compiler::ir::OpKind::kRmsNorm ||
+        op.kind == self_compiler::ir::OpKind::kRope ||
+        op.kind == self_compiler::ir::OpKind::kAttention ||
+        op.kind == self_compiler::ir::OpKind::kSoftmax) {
+        const auto& input = get_input(0);
+        const auto& output = get_output(0);
+        auto shape_status = CheckSameShape(op, input, output, "input", "output");
+        if (!shape_status.ok) {
+            return shape_status;
+        }
+        return CheckSameDType(op, input, output, "input", "output");
+    }
+
+    if (op.kind == self_compiler::ir::OpKind::kLinear ||
+        op.kind == self_compiler::ir::OpKind::kQkvProject ||
+        op.kind == self_compiler::ir::OpKind::kSwiGLU) {
+        const auto& input = get_input(0);
+        const auto& output = get_output(0);
+        if (input.shape.dims.size() != output.shape.dims.size()) {
+            return self_compiler::Status::Error(
+                op.name + ": input rank " + std::to_string(input.shape.dims.size()) +
+                " does not match output rank " + std::to_string(output.shape.dims.size()));
+        }
+        return CheckSameDType(op, input, output, "input", "output");
     }
 
     return self_compiler::Status::Ok();
@@ -364,6 +591,117 @@ void NormalizeNames(self_compiler::ir::Graph& graph) {
     }
 }
 
+bool ContainId(const std::vector<int>& ids, int target) {
+    auto it = std::find(ids.begin(), ids.end(), target);
+    return it != ids.end();
+}
+
+self_compiler::Status ValidateProducerConsumerConsistency(
+    const self_compiler::ir::Graph& graph) {
+    const auto& tensors = graph.tensors();
+    const auto& operations = graph.operations();
+    const int tensor_count = static_cast<int>(tensors.size());
+    const int operation_count = static_cast<int>(operations.size());
+
+    for (const auto& tensor : tensors) {
+        if (tensor.producer_op != -1) {
+            if (tensor.producer_op < 0 || tensor.producer_op >= operation_count) {
+                return self_compiler::Status::Error(
+                    "Tensor T" + std::to_string(tensor.id) +
+                    " has an invalid producer_op O" + std::to_string(tensor.producer_op));
+            }
+
+            if (!ContainId(operations[tensor.producer_op].outputs, tensor.id)) {
+                return self_compiler::Status::Error(
+                    "Tensor T" + std::to_string(tensor.id) +
+                    " producer_op O" + std::to_string(tensor.producer_op) +
+                    " does not list it as output");
+            }
+        }
+
+        for (int consumer_op_id : tensor.consumer_ops) {
+            if (consumer_op_id < 0 || consumer_op_id >= operation_count) {
+                return self_compiler::Status::Error(
+                    "Tensor T" + std::to_string(tensor.id) +
+                    " has an invalid consumer_op O" + std::to_string(consumer_op_id));
+            }
+
+            if (!ContainId(operations[consumer_op_id].inputs, tensor.id)) {
+                return self_compiler::Status::Error(
+                    "Tensor T" + std::to_string(tensor.id) +
+                    " consumer_op O" + std::to_string(consumer_op_id) +
+                    " does not list it as input");
+            }
+        }
+    }
+
+    for (const auto& op : operations) {
+        for (int input_tensor_id : op.inputs) {
+            if (input_tensor_id < 0 || input_tensor_id >= tensor_count) {
+                return self_compiler::Status::Error(
+                    "Operation O" + std::to_string(op.id) +
+                    " has an invalid input tensor ID: " + std::to_string(input_tensor_id));
+            }
+
+            if (!ContainId(tensors[input_tensor_id].consumer_ops, op.id)) {
+                return self_compiler::Status::Error(
+                    "Operation O" + std::to_string(op.id) +
+                    " lists T" + std::to_string(input_tensor_id) +
+                    " as input, but it does not list O" + std::to_string(op.id) +
+                    " as consumer");
+            }
+        }
+
+        for (int output_tensor_id : op.outputs) {
+            if (output_tensor_id < 0 || output_tensor_id >= tensor_count) {
+                return self_compiler::Status::Error(
+                    "Operation O" + std::to_string(op.id) +
+                    " has an invalid output tensor ID: " + std::to_string(output_tensor_id));
+            }
+
+            if (tensors[output_tensor_id].producer_op != op.id) {
+                return self_compiler::Status::Error(
+                    "Operation O" + std::to_string(op.id) +
+                    " lists T" + std::to_string(output_tensor_id) +
+                    " as output, but its producer_op is O" +
+                    std::to_string(tensors[output_tensor_id].producer_op));
+            }
+        }
+    }
+
+    return self_compiler::Status::Ok();
+}
+
+self_compiler::Status CheckTensorMetadata(const self_compiler::ir::Graph& graph) {
+    const auto& tensors = graph.tensors();
+
+    for (const auto& tensor : tensors) {
+        if (tensor.dtype == self_compiler::ir::DataType::kUnknown) {
+            return self_compiler::Status::Error(
+                "Tensor T" + std::to_string(tensor.id) +
+                " (" + tensor.name + ") has unknown dtype");
+        }
+
+        if (tensor.shape.dims.empty()) {
+            return self_compiler::Status::Error(
+                "Tensor T" + std::to_string(tensor.id) +
+                " (" + tensor.name + ") has empty shape");
+        }
+
+        for (std::size_t dim_index = 0; dim_index < tensor.shape.dims.size(); ++dim_index) {
+            const auto dim = tensor.shape.dims[dim_index];
+            if (dim <= 0) {
+                return self_compiler::Status::Error(
+                    "Tensor T" + std::to_string(tensor.id) +
+                    " (" + tensor.name + ") has invalid dimension at axis " +
+                    std::to_string(dim_index) + ": " + std::to_string(dim));
+            }
+        }
+    }
+
+    return self_compiler::Status::Ok();
+}
+
 }  // namespace
 
 namespace self_compiler::passes {
@@ -376,6 +714,17 @@ self_compiler::Status CanonicalizePass::Run(ir::Graph& graph) {
     auto tensor_status = CheckTensorId(graph);
     if (!tensor_status.ok) {
         return self_compiler::Status::Error("Tensor ID check failed: " + tensor_status.message);
+    }
+
+    auto graph_object_id_status = CheckGraphObjectIds(graph);
+    if (!graph_object_id_status.ok) {
+        return self_compiler::Status::Error("Graph object id check failed: " + graph_object_id_status.message);
+    }
+
+    auto tensor_metadata_status = CheckTensorMetadata(graph);
+    if (!tensor_metadata_status.ok) {
+        return self_compiler::Status::Error(
+            "Tensor metadata check failed: " + tensor_metadata_status.message);
     }
 
     for (const auto& op : graph.operations()) {
@@ -398,6 +747,18 @@ self_compiler::Status CanonicalizePass::Run(ir::Graph& graph) {
         if (!attribute_relations_status.ok) {
             return self_compiler::Status::Error("Attribute relations check failed: " + attribute_relations_status.message);
         }
+
+        auto op_tensor_semantics_status = CheckOpTensorSemantics(op, graph);
+        if (!op_tensor_semantics_status.ok) {
+            return self_compiler::Status::Error(
+                "Operation tensor semantics check failed: " + op_tensor_semantics_status.message);
+        }
+    }
+
+    auto producer_consumer_status = ValidateProducerConsumerConsistency(graph);
+    if (!producer_consumer_status.ok) {
+        return self_compiler::Status::Error(
+            "Producer/consumer consistency check failed: " + producer_consumer_status.message);
     }
 
     for (auto& op : graph.operations()) {
@@ -410,14 +771,8 @@ self_compiler::Status CanonicalizePass::Run(ir::Graph& graph) {
         op.attributes["canonicalized"] = "true";
     }
 
-    // 伪代码：后续请用真实规范化逻辑替换这里
-    // 遍历图中的每个算子：
-    //   消除无效的 reshape / transpose
-    //   删除无用常量
-    //   统一属性布局
-    //   规范张量命名和边顺序
-
     return self_compiler::Status::Ok();
 }
 
 }  // namespace self_compiler::passes
+

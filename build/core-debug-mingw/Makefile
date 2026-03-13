@@ -271,6 +271,30 @@ src/frontend/json_importer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\self_compiler_core.dir\build.make CMakeFiles/self_compiler_core.dir/src/frontend/json_importer.cpp.s
 .PHONY : src/frontend/json_importer.cpp.s
 
+src/frontend/llama_config_importer.obj: src/frontend/llama_config_importer.cpp.obj
+.PHONY : src/frontend/llama_config_importer.obj
+
+# target to build an object file
+src/frontend/llama_config_importer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\self_compiler_core.dir\build.make CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.obj
+.PHONY : src/frontend/llama_config_importer.cpp.obj
+
+src/frontend/llama_config_importer.i: src/frontend/llama_config_importer.cpp.i
+.PHONY : src/frontend/llama_config_importer.i
+
+# target to preprocess a source file
+src/frontend/llama_config_importer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\self_compiler_core.dir\build.make CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.i
+.PHONY : src/frontend/llama_config_importer.cpp.i
+
+src/frontend/llama_config_importer.s: src/frontend/llama_config_importer.cpp.s
+.PHONY : src/frontend/llama_config_importer.s
+
+# target to generate assembly for a file
+src/frontend/llama_config_importer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\self_compiler_core.dir\build.make CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.s
+.PHONY : src/frontend/llama_config_importer.cpp.s
+
 src/frontend/onnx_importer.obj: src/frontend/onnx_importer.cpp.obj
 .PHONY : src/frontend/onnx_importer.obj
 
@@ -513,6 +537,9 @@ help:
 	@echo ... src/frontend/json_importer.obj
 	@echo ... src/frontend/json_importer.i
 	@echo ... src/frontend/json_importer.s
+	@echo ... src/frontend/llama_config_importer.obj
+	@echo ... src/frontend/llama_config_importer.i
+	@echo ... src/frontend/llama_config_importer.s
 	@echo ... src/frontend/onnx_importer.obj
 	@echo ... src/frontend/onnx_importer.i
 	@echo ... src/frontend/onnx_importer.s

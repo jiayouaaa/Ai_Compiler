@@ -176,4 +176,5 @@ CMakeFiles/self_compiler_core.dir/src/frontend/importer_factory.cpp.obj: \
  D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_heap.h \
  D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/uniform_int_dist.h \
  D:/Ai_kernel/llama3/self_compiler/include/self_compiler/frontend/json_importer.h \
+ D:/Ai_kernel/llama3/self_compiler/include/self_compiler/frontend/llama_config_importer.h \
  D:/Ai_kernel/llama3/self_compiler/include/self_compiler/frontend/onnx_importer.h

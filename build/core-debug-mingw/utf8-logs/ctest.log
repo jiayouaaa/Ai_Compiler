@@ -1,0 +1,7 @@
+﻿Test project D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw
+    Start 1: self_compiler_smoke
+1/1 Test #1: self_compiler_smoke ..............   Passed    0.02 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.02 sec

@@ -351,11 +351,37 @@ cmake --build --preset build-mlir-debug
 
 `scripts/configure_dev_env.ps1`
 
+`scripts/run_utf8.ps1`
+
 作用：
 
 - 检查 `cmake` / `g++` / `mingw32-make` / `ninja` / `llvm-config`
 - 提示当前是否具备 MLIR 开发条件
 - 创建核心构建目录
+- 在 Windows 下切换控制台到 UTF-8，并以 UTF-8 日志方式运行 `ctest` / `self_compiler_cli`
+
+#### Windows 下避免中文乱码的推荐运行方式
+
+```powershell
+cd self_compiler
+powershell -ExecutionPolicy Bypass -File .\scripts\run_utf8.ps1 -Mode ctest
+```
+
+```powershell
+cd self_compiler
+powershell -ExecutionPolicy Bypass -File .\scripts\run_utf8.ps1 -Mode cli
+```
+
+```powershell
+cd self_compiler
+powershell -ExecutionPolicy Bypass -File .\scripts\run_utf8.ps1 -Mode cli -InputPath ..\Llama-3.2-1B\config.json -Format llama_config
+```
+
+说明：
+
+- 脚本会先执行 `chcp 65001`
+- 同时设置 PowerShell 控制台输入/输出编码为 UTF-8
+- 运行结果还会额外保存到 `build/core-debug-mingw/utf8-logs/`，便于查看 UTF-8 版本日志
 
 ---
 

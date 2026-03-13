@@ -116,11 +116,26 @@ CMakeFiles/self_compiler_core.dir/src/frontend/json_importer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/self_compiler_core.dir/src/frontend/json_importer.cpp.s"
 	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Ai_kernel\llama3\self_compiler\src\frontend\json_importer.cpp -o CMakeFiles\self_compiler_core.dir\src\frontend\json_importer.cpp.s
 
+CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.obj: CMakeFiles/self_compiler_core.dir/flags.make
+CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.obj: CMakeFiles/self_compiler_core.dir/includes_CXX.rsp
+CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.obj: D:/Ai_kernel/llama3/self_compiler/src/frontend/llama_config_importer.cpp
+CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.obj: CMakeFiles/self_compiler_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.obj"
+	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.obj -MF CMakeFiles\self_compiler_core.dir\src\frontend\llama_config_importer.cpp.obj.d -o CMakeFiles\self_compiler_core.dir\src\frontend\llama_config_importer.cpp.obj -c D:\Ai_kernel\llama3\self_compiler\src\frontend\llama_config_importer.cpp
+
+CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.i"
+	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\Ai_kernel\llama3\self_compiler\src\frontend\llama_config_importer.cpp > CMakeFiles\self_compiler_core.dir\src\frontend\llama_config_importer.cpp.i
+
+CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.s"
+	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\Ai_kernel\llama3\self_compiler\src\frontend\llama_config_importer.cpp -o CMakeFiles\self_compiler_core.dir\src\frontend\llama_config_importer.cpp.s
+
 CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj: CMakeFiles/self_compiler_core.dir/flags.make
 CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj: CMakeFiles/self_compiler_core.dir/includes_CXX.rsp
 CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj: D:/Ai_kernel/llama3/self_compiler/src/frontend/onnx_importer.cpp
 CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj: CMakeFiles/self_compiler_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj"
 	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj -MF CMakeFiles\self_compiler_core.dir\src\frontend\onnx_importer.cpp.obj.d -o CMakeFiles\self_compiler_core.dir\src\frontend\onnx_importer.cpp.obj -c D:\Ai_kernel\llama3\self_compiler\src\frontend\onnx_importer.cpp
 
 CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.i: cmake_force
@@ -135,7 +150,7 @@ CMakeFiles/self_compiler_core.dir/src/passes/pass_manager.cpp.obj: CMakeFiles/se
 CMakeFiles/self_compiler_core.dir/src/passes/pass_manager.cpp.obj: CMakeFiles/self_compiler_core.dir/includes_CXX.rsp
 CMakeFiles/self_compiler_core.dir/src/passes/pass_manager.cpp.obj: D:/Ai_kernel/llama3/self_compiler/src/passes/pass_manager.cpp
 CMakeFiles/self_compiler_core.dir/src/passes/pass_manager.cpp.obj: CMakeFiles/self_compiler_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/self_compiler_core.dir/src/passes/pass_manager.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/self_compiler_core.dir/src/passes/pass_manager.cpp.obj"
 	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/self_compiler_core.dir/src/passes/pass_manager.cpp.obj -MF CMakeFiles\self_compiler_core.dir\src\passes\pass_manager.cpp.obj.d -o CMakeFiles\self_compiler_core.dir\src\passes\pass_manager.cpp.obj -c D:\Ai_kernel\llama3\self_compiler\src\passes\pass_manager.cpp
 
 CMakeFiles/self_compiler_core.dir/src/passes/pass_manager.cpp.i: cmake_force
@@ -150,7 +165,7 @@ CMakeFiles/self_compiler_core.dir/src/passes/canonicalize_pass.cpp.obj: CMakeFil
 CMakeFiles/self_compiler_core.dir/src/passes/canonicalize_pass.cpp.obj: CMakeFiles/self_compiler_core.dir/includes_CXX.rsp
 CMakeFiles/self_compiler_core.dir/src/passes/canonicalize_pass.cpp.obj: D:/Ai_kernel/llama3/self_compiler/src/passes/canonicalize_pass.cpp
 CMakeFiles/self_compiler_core.dir/src/passes/canonicalize_pass.cpp.obj: CMakeFiles/self_compiler_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/self_compiler_core.dir/src/passes/canonicalize_pass.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/self_compiler_core.dir/src/passes/canonicalize_pass.cpp.obj"
 	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/self_compiler_core.dir/src/passes/canonicalize_pass.cpp.obj -MF CMakeFiles\self_compiler_core.dir\src\passes\canonicalize_pass.cpp.obj.d -o CMakeFiles\self_compiler_core.dir\src\passes\canonicalize_pass.cpp.obj -c D:\Ai_kernel\llama3\self_compiler\src\passes\canonicalize_pass.cpp
 
 CMakeFiles/self_compiler_core.dir/src/passes/canonicalize_pass.cpp.i: cmake_force
@@ -165,7 +180,7 @@ CMakeFiles/self_compiler_core.dir/src/passes/lower_transformer_to_runtime_pass.c
 CMakeFiles/self_compiler_core.dir/src/passes/lower_transformer_to_runtime_pass.cpp.obj: CMakeFiles/self_compiler_core.dir/includes_CXX.rsp
 CMakeFiles/self_compiler_core.dir/src/passes/lower_transformer_to_runtime_pass.cpp.obj: D:/Ai_kernel/llama3/self_compiler/src/passes/lower_transformer_to_runtime_pass.cpp
 CMakeFiles/self_compiler_core.dir/src/passes/lower_transformer_to_runtime_pass.cpp.obj: CMakeFiles/self_compiler_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/self_compiler_core.dir/src/passes/lower_transformer_to_runtime_pass.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/self_compiler_core.dir/src/passes/lower_transformer_to_runtime_pass.cpp.obj"
 	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/self_compiler_core.dir/src/passes/lower_transformer_to_runtime_pass.cpp.obj -MF CMakeFiles\self_compiler_core.dir\src\passes\lower_transformer_to_runtime_pass.cpp.obj.d -o CMakeFiles\self_compiler_core.dir\src\passes\lower_transformer_to_runtime_pass.cpp.obj -c D:\Ai_kernel\llama3\self_compiler\src\passes\lower_transformer_to_runtime_pass.cpp
 
 CMakeFiles/self_compiler_core.dir/src/passes/lower_transformer_to_runtime_pass.cpp.i: cmake_force
@@ -180,7 +195,7 @@ CMakeFiles/self_compiler_core.dir/src/memory/live_interval.cpp.obj: CMakeFiles/s
 CMakeFiles/self_compiler_core.dir/src/memory/live_interval.cpp.obj: CMakeFiles/self_compiler_core.dir/includes_CXX.rsp
 CMakeFiles/self_compiler_core.dir/src/memory/live_interval.cpp.obj: D:/Ai_kernel/llama3/self_compiler/src/memory/live_interval.cpp
 CMakeFiles/self_compiler_core.dir/src/memory/live_interval.cpp.obj: CMakeFiles/self_compiler_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/self_compiler_core.dir/src/memory/live_interval.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/self_compiler_core.dir/src/memory/live_interval.cpp.obj"
 	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/self_compiler_core.dir/src/memory/live_interval.cpp.obj -MF CMakeFiles\self_compiler_core.dir\src\memory\live_interval.cpp.obj.d -o CMakeFiles\self_compiler_core.dir\src\memory\live_interval.cpp.obj -c D:\Ai_kernel\llama3\self_compiler\src\memory\live_interval.cpp
 
 CMakeFiles/self_compiler_core.dir/src/memory/live_interval.cpp.i: cmake_force
@@ -195,7 +210,7 @@ CMakeFiles/self_compiler_core.dir/src/memory/memory_planner.cpp.obj: CMakeFiles/
 CMakeFiles/self_compiler_core.dir/src/memory/memory_planner.cpp.obj: CMakeFiles/self_compiler_core.dir/includes_CXX.rsp
 CMakeFiles/self_compiler_core.dir/src/memory/memory_planner.cpp.obj: D:/Ai_kernel/llama3/self_compiler/src/memory/memory_planner.cpp
 CMakeFiles/self_compiler_core.dir/src/memory/memory_planner.cpp.obj: CMakeFiles/self_compiler_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/self_compiler_core.dir/src/memory/memory_planner.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/self_compiler_core.dir/src/memory/memory_planner.cpp.obj"
 	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/self_compiler_core.dir/src/memory/memory_planner.cpp.obj -MF CMakeFiles\self_compiler_core.dir\src\memory\memory_planner.cpp.obj.d -o CMakeFiles\self_compiler_core.dir\src\memory\memory_planner.cpp.obj -c D:\Ai_kernel\llama3\self_compiler\src\memory\memory_planner.cpp
 
 CMakeFiles/self_compiler_core.dir/src/memory/memory_planner.cpp.i: cmake_force
@@ -210,7 +225,7 @@ CMakeFiles/self_compiler_core.dir/src/backend/command_stream.cpp.obj: CMakeFiles
 CMakeFiles/self_compiler_core.dir/src/backend/command_stream.cpp.obj: CMakeFiles/self_compiler_core.dir/includes_CXX.rsp
 CMakeFiles/self_compiler_core.dir/src/backend/command_stream.cpp.obj: D:/Ai_kernel/llama3/self_compiler/src/backend/command_stream.cpp
 CMakeFiles/self_compiler_core.dir/src/backend/command_stream.cpp.obj: CMakeFiles/self_compiler_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/self_compiler_core.dir/src/backend/command_stream.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/self_compiler_core.dir/src/backend/command_stream.cpp.obj"
 	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/self_compiler_core.dir/src/backend/command_stream.cpp.obj -MF CMakeFiles\self_compiler_core.dir\src\backend\command_stream.cpp.obj.d -o CMakeFiles\self_compiler_core.dir\src\backend\command_stream.cpp.obj -c D:\Ai_kernel\llama3\self_compiler\src\backend\command_stream.cpp
 
 CMakeFiles/self_compiler_core.dir/src/backend/command_stream.cpp.i: cmake_force
@@ -225,7 +240,7 @@ CMakeFiles/self_compiler_core.dir/src/backend/toy_backend.cpp.obj: CMakeFiles/se
 CMakeFiles/self_compiler_core.dir/src/backend/toy_backend.cpp.obj: CMakeFiles/self_compiler_core.dir/includes_CXX.rsp
 CMakeFiles/self_compiler_core.dir/src/backend/toy_backend.cpp.obj: D:/Ai_kernel/llama3/self_compiler/src/backend/toy_backend.cpp
 CMakeFiles/self_compiler_core.dir/src/backend/toy_backend.cpp.obj: CMakeFiles/self_compiler_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/self_compiler_core.dir/src/backend/toy_backend.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/self_compiler_core.dir/src/backend/toy_backend.cpp.obj"
 	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/self_compiler_core.dir/src/backend/toy_backend.cpp.obj -MF CMakeFiles\self_compiler_core.dir\src\backend\toy_backend.cpp.obj.d -o CMakeFiles\self_compiler_core.dir\src\backend\toy_backend.cpp.obj -c D:\Ai_kernel\llama3\self_compiler\src\backend\toy_backend.cpp
 
 CMakeFiles/self_compiler_core.dir/src/backend/toy_backend.cpp.i: cmake_force
@@ -240,7 +255,7 @@ CMakeFiles/self_compiler_core.dir/src/app/compiler_app.cpp.obj: CMakeFiles/self_
 CMakeFiles/self_compiler_core.dir/src/app/compiler_app.cpp.obj: CMakeFiles/self_compiler_core.dir/includes_CXX.rsp
 CMakeFiles/self_compiler_core.dir/src/app/compiler_app.cpp.obj: D:/Ai_kernel/llama3/self_compiler/src/app/compiler_app.cpp
 CMakeFiles/self_compiler_core.dir/src/app/compiler_app.cpp.obj: CMakeFiles/self_compiler_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/self_compiler_core.dir/src/app/compiler_app.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/self_compiler_core.dir/src/app/compiler_app.cpp.obj"
 	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/self_compiler_core.dir/src/app/compiler_app.cpp.obj -MF CMakeFiles\self_compiler_core.dir\src\app\compiler_app.cpp.obj.d -o CMakeFiles\self_compiler_core.dir\src\app\compiler_app.cpp.obj -c D:\Ai_kernel\llama3\self_compiler\src\app\compiler_app.cpp
 
 CMakeFiles/self_compiler_core.dir/src/app/compiler_app.cpp.i: cmake_force
@@ -255,7 +270,7 @@ CMakeFiles/self_compiler_core.dir/src/mlir/mlir_bridge_stub.cpp.obj: CMakeFiles/
 CMakeFiles/self_compiler_core.dir/src/mlir/mlir_bridge_stub.cpp.obj: CMakeFiles/self_compiler_core.dir/includes_CXX.rsp
 CMakeFiles/self_compiler_core.dir/src/mlir/mlir_bridge_stub.cpp.obj: D:/Ai_kernel/llama3/self_compiler/src/mlir/mlir_bridge_stub.cpp
 CMakeFiles/self_compiler_core.dir/src/mlir/mlir_bridge_stub.cpp.obj: CMakeFiles/self_compiler_core.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/self_compiler_core.dir/src/mlir/mlir_bridge_stub.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/self_compiler_core.dir/src/mlir/mlir_bridge_stub.cpp.obj"
 	D:\mingw64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/self_compiler_core.dir/src/mlir/mlir_bridge_stub.cpp.obj -MF CMakeFiles\self_compiler_core.dir\src\mlir\mlir_bridge_stub.cpp.obj.d -o CMakeFiles\self_compiler_core.dir\src\mlir\mlir_bridge_stub.cpp.obj -c D:\Ai_kernel\llama3\self_compiler\src\mlir\mlir_bridge_stub.cpp
 
 CMakeFiles/self_compiler_core.dir/src/mlir/mlir_bridge_stub.cpp.i: cmake_force
@@ -271,6 +286,7 @@ self_compiler_core_OBJECTS = \
 "CMakeFiles/self_compiler_core.dir/src/frontend/transformer_block_builder.cpp.obj" \
 "CMakeFiles/self_compiler_core.dir/src/frontend/importer_factory.cpp.obj" \
 "CMakeFiles/self_compiler_core.dir/src/frontend/json_importer.cpp.obj" \
+"CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.obj" \
 "CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj" \
 "CMakeFiles/self_compiler_core.dir/src/passes/pass_manager.cpp.obj" \
 "CMakeFiles/self_compiler_core.dir/src/passes/canonicalize_pass.cpp.obj" \
@@ -288,6 +304,7 @@ self_compiler_core_EXTERNAL_OBJECTS =
 libself_compiler_core.a: CMakeFiles/self_compiler_core.dir/src/frontend/transformer_block_builder.cpp.obj
 libself_compiler_core.a: CMakeFiles/self_compiler_core.dir/src/frontend/importer_factory.cpp.obj
 libself_compiler_core.a: CMakeFiles/self_compiler_core.dir/src/frontend/json_importer.cpp.obj
+libself_compiler_core.a: CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.obj
 libself_compiler_core.a: CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj
 libself_compiler_core.a: CMakeFiles/self_compiler_core.dir/src/passes/pass_manager.cpp.obj
 libself_compiler_core.a: CMakeFiles/self_compiler_core.dir/src/passes/canonicalize_pass.cpp.obj
@@ -300,7 +317,7 @@ libself_compiler_core.a: CMakeFiles/self_compiler_core.dir/src/app/compiler_app.
 libself_compiler_core.a: CMakeFiles/self_compiler_core.dir/src/mlir/mlir_bridge_stub.cpp.obj
 libself_compiler_core.a: CMakeFiles/self_compiler_core.dir/build.make
 libself_compiler_core.a: CMakeFiles/self_compiler_core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX static library libself_compiler_core.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=D:\Ai_kernel\llama3\self_compiler\build\core-debug-mingw\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Linking CXX static library libself_compiler_core.a"
 	$(CMAKE_COMMAND) -P CMakeFiles\self_compiler_core.dir\cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\self_compiler_core.dir\link.txt --verbose=$(VERBOSE)
 

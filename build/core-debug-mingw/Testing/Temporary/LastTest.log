@@ -1,10 +1,10 @@
-Start testing: Mar 09 01:05 ÖĞ¹ú±ê×¼Ê±¼ä
+Start testing: Mar 14 01:55 ÖĞ¹ú±ê×¼Ê±¼ä
 ----------------------------------------------------------
 1/1 Testing: self_compiler_smoke
 1/1 Test: self_compiler_smoke
 Command: "D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw/self_compiler_cli.exe" "--mode" "demo"
 Directory: D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw
-"self_compiler_smoke" start time: Mar 09 01:05 ÖĞ¹ú±ê×¼Ê±¼ä
+"self_compiler_smoke" start time: Mar 14 01:55 ÖĞ¹ú±ê×¼Ê±¼ä
 Output:
 ----------------------------------------------------------
 ==== é«˜å±‚å›¾ ====
@@ -90,11 +90,11 @@ module {
   // ç®—å­: output kind=Output
 }
 <end of output>
-Test time =   0.05 sec
+Test time =   0.02 sec
 ----------------------------------------------------------
 Test Passed.
-"self_compiler_smoke" end time: Mar 09 01:05 ÖĞ¹ú±ê×¼Ê±¼ä
+"self_compiler_smoke" end time: Mar 14 01:55 ÖĞ¹ú±ê×¼Ê±¼ä
 "self_compiler_smoke" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Mar 09 01:05 ÖĞ¹ú±ê×¼Ê±¼ä
+End testing: Mar 14 01:55 ÖĞ¹ú±ê×¼Ê±¼ä

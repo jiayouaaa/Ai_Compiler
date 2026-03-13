@@ -9,6 +9,7 @@ namespace self_compiler::frontend {
 
 enum class InputFormat {
     kSpec,
+    kLlamaConfig,
     kJson,
     kOnnx,
     kTFLite,
@@ -21,6 +22,8 @@ inline std::string ToString(InputFormat format) {
     switch (format) {
         case InputFormat::kSpec:
             return "spec";
+        case InputFormat::kLlamaConfig:
+            return "llama_config";
         case InputFormat::kJson:
             return "json";
         case InputFormat::kOnnx:

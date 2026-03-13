@@ -9,6 +9,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/self_compiler_core.dir/src/frontend/importer_factory.cpp.obj.d"
   "CMakeFiles/self_compiler_core.dir/src/frontend/json_importer.cpp.obj"
   "CMakeFiles/self_compiler_core.dir/src/frontend/json_importer.cpp.obj.d"
+  "CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.obj"
+  "CMakeFiles/self_compiler_core.dir/src/frontend/llama_config_importer.cpp.obj.d"
   "CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj"
   "CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj.d"
   "CMakeFiles/self_compiler_core.dir/src/frontend/transformer_block_builder.cpp.obj"

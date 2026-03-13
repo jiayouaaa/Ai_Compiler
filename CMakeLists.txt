@@ -12,6 +12,7 @@ add_library(self_compiler_core
     src/frontend/transformer_block_builder.cpp
     src/frontend/importer_factory.cpp
     src/frontend/json_importer.cpp
+    src/frontend/llama_config_importer.cpp
     src/frontend/onnx_importer.cpp
     src/passes/pass_manager.cpp
     src/passes/canonicalize_pass.cpp
