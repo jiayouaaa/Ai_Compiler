@@ -4,6 +4,7 @@
 #include <limits>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -188,12 +189,7 @@ self_compiler::Status CheckAttributeValue(const self_compiler::ir::Operation& op
     return self_compiler::Status::Ok();
 }
 
-std::string CanonicalizeName(const std::string& raw_name, const std::string& fallback_prefix, int id) {
-    std::string source = raw_name;
-    if (source.empty()) {
-        source = fallback_prefix + "_" + std::to_string(id);
-    }
-
+std::string CanonicalizeIdentifierBody(const std::string& source) {
     std::string result;
     result.reserve(source.size());
     bool last_was_underscore = false;
@@ -215,10 +211,147 @@ std::string CanonicalizeName(const std::string& raw_name, const std::string& fal
         result.pop_back();
     }
 
+    return result;
+}
+
+std::string CanonicalizeName(const std::string& raw_name, const std::string& fallback_prefix, int id) {
+    std::string source = raw_name;
+    if (source.empty()) {
+        source = fallback_prefix + "_" + std::to_string(id);
+    }
+
+    std::string result = CanonicalizeIdentifierBody(source);
     if (result.empty()) {
         return fallback_prefix + "_" + std::to_string(id);
     }
     return result;
+}
+
+std::string CanonicalizeAttributeKey(const std::string& raw_key) {
+    return CanonicalizeIdentifierBody(raw_key);
+}
+
+self_compiler::Status CheckAttributeRelations(const self_compiler::ir::Operation& op) {
+    if (op.kind != self_compiler::ir::OpKind::kTransformerBlock) {
+        return self_compiler::Status::Ok();
+    }
+
+    const int hidden_size = Attr_Stoi(op.attributes.find("hidden_size")->second);
+    const int num_attention_heads = Attr_Stoi(op.attributes.find("num_attention_heads")->second);
+    const int num_key_value_heads = Attr_Stoi(op.attributes.find("num_key_value_heads")->second);
+
+    if (hidden_size % num_attention_heads != 0) {
+        return self_compiler::Status::Error(
+            op.name + ": hidden_size " + std::to_string(hidden_size) +
+            " must be divisible by num_attention_heads " +
+            std::to_string(num_attention_heads));
+    }
+
+    if (num_attention_heads % num_key_value_heads != 0) {
+        return self_compiler::Status::Error(
+            op.name + ": num_attention_heads " +
+            std::to_string(num_attention_heads) +
+            " must be divisible by num_key_value_heads " +
+            std::to_string(num_key_value_heads));
+    }
+
+    return self_compiler::Status::Ok();
+}
+
+std::string Trim(const std::string& s) {
+    if (s.empty()) {
+        return "";
+    }
+
+    int left = 0;
+    int right = static_cast<int>(s.size()) - 1;
+    while (left <= right && std::isspace(static_cast<unsigned char>(s[left])) != 0) {
+        ++left;
+    }
+    while (left <= right && std::isspace(static_cast<unsigned char>(s[right])) != 0) {
+        --right;
+    }
+
+    return (left <= right) ? s.substr(left, right - left + 1) : "";
+}
+
+std::string ToLowerCopy(std::string s) {
+    for (char& ch : s) {
+        ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+    }
+    return s;
+}
+
+bool IsIntegerString(const std::string& s) {
+    if (s.empty()) {
+        return false;
+    }
+
+    int i = 0;
+    if (s[0] == '+' || s[0] == '-') {
+        if (s.size() == 1) {
+            return false;
+        }
+        i = 1;
+    }
+
+    for (; i < static_cast<int>(s.size()); ++i) {
+        if (std::isdigit(static_cast<unsigned char>(s[i])) == 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+std::string NormalizeIntegerString(const std::string& s) {
+    int i = 0;
+    bool negative = false;
+
+    if (s[0] == '+' || s[0] == '-') {
+        negative = (s[0] == '-');
+        i = 1;
+    }
+
+    while (i < static_cast<int>(s.size()) && s[i] == '0') {
+        ++i;
+    }
+
+    std::string core = (i == static_cast<int>(s.size())) ? "0" : s.substr(i);
+    if (core == "0") {
+        return "0";
+    }
+    return negative ? "-" + core : core;
+}
+
+std::string CanonicalizeAttributeValue(std::string s) {
+    s = Trim(s);
+
+    const std::string lower = ToLowerCopy(s);
+    if (lower == "true") {
+        return "True";
+    }
+    if (lower == "false") {
+        return "False";
+    }
+
+    if (IsIntegerString(s)) {
+        return NormalizeIntegerString(s);
+    }
+
+    return s;
+}
+
+void NormalizeAttributes(self_compiler::ir::Operation& op) {
+    decltype(op.attributes) normalized;
+
+    for (const auto& item : op.attributes) {
+        const auto key = CanonicalizeAttributeKey(item.first);
+        const auto value = CanonicalizeAttributeValue(item.second);
+        normalized[key] = value;
+    }
+
+    op.attributes = std::move(normalized);
 }
 
 void NormalizeNames(self_compiler::ir::Graph& graph) {
@@ -260,6 +393,15 @@ self_compiler::Status CanonicalizePass::Run(ir::Graph& graph) {
         if (!attribute_value_status.ok) {
             return self_compiler::Status::Error("Attribute value check failed: " + attribute_value_status.message);
         }
+
+        auto attribute_relations_status = CheckAttributeRelations(op);
+        if (!attribute_relations_status.ok) {
+            return self_compiler::Status::Error("Attribute relations check failed: " + attribute_relations_status.message);
+        }
+    }
+
+    for (auto& op : graph.operations()) {
+        NormalizeAttributes(op);
     }
 
     NormalizeNames(graph);
