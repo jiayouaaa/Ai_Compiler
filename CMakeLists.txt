@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(self_compiler_core
+    src/ir/op_registry.cpp
     src/frontend/transformer_block_builder.cpp
     src/frontend/importer_factory.cpp
     src/frontend/json_importer.cpp

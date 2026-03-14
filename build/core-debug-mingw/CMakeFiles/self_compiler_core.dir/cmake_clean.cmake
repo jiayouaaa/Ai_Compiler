@@ -15,6 +15,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj.d"
   "CMakeFiles/self_compiler_core.dir/src/frontend/transformer_block_builder.cpp.obj"
   "CMakeFiles/self_compiler_core.dir/src/frontend/transformer_block_builder.cpp.obj.d"
+  "CMakeFiles/self_compiler_core.dir/src/ir/op_registry.cpp.obj"
+  "CMakeFiles/self_compiler_core.dir/src/ir/op_registry.cpp.obj.d"
   "CMakeFiles/self_compiler_core.dir/src/memory/live_interval.cpp.obj"
   "CMakeFiles/self_compiler_core.dir/src/memory/live_interval.cpp.obj.d"
   "CMakeFiles/self_compiler_core.dir/src/memory/memory_planner.cpp.obj"

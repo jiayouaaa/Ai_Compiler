@@ -343,6 +343,30 @@ src/frontend/transformer_block_builder.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\self_compiler_core.dir\build.make CMakeFiles/self_compiler_core.dir/src/frontend/transformer_block_builder.cpp.s
 .PHONY : src/frontend/transformer_block_builder.cpp.s
 
+src/ir/op_registry.obj: src/ir/op_registry.cpp.obj
+.PHONY : src/ir/op_registry.obj
+
+# target to build an object file
+src/ir/op_registry.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\self_compiler_core.dir\build.make CMakeFiles/self_compiler_core.dir/src/ir/op_registry.cpp.obj
+.PHONY : src/ir/op_registry.cpp.obj
+
+src/ir/op_registry.i: src/ir/op_registry.cpp.i
+.PHONY : src/ir/op_registry.i
+
+# target to preprocess a source file
+src/ir/op_registry.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\self_compiler_core.dir\build.make CMakeFiles/self_compiler_core.dir/src/ir/op_registry.cpp.i
+.PHONY : src/ir/op_registry.cpp.i
+
+src/ir/op_registry.s: src/ir/op_registry.cpp.s
+.PHONY : src/ir/op_registry.s
+
+# target to generate assembly for a file
+src/ir/op_registry.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\self_compiler_core.dir\build.make CMakeFiles/self_compiler_core.dir/src/ir/op_registry.cpp.s
+.PHONY : src/ir/op_registry.cpp.s
+
 src/memory/live_interval.obj: src/memory/live_interval.cpp.obj
 .PHONY : src/memory/live_interval.obj
 
@@ -546,6 +570,9 @@ help:
 	@echo ... src/frontend/transformer_block_builder.obj
 	@echo ... src/frontend/transformer_block_builder.i
 	@echo ... src/frontend/transformer_block_builder.s
+	@echo ... src/ir/op_registry.obj
+	@echo ... src/ir/op_registry.i
+	@echo ... src/ir/op_registry.s
 	@echo ... src/memory/live_interval.obj
 	@echo ... src/memory/live_interval.i
 	@echo ... src/memory/live_interval.s

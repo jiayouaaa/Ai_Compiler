@@ -9,6 +9,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "self_compiler/ir/op_registry.h"
+
 namespace {
 
 int Attr_Stoi(const std::string& text);
@@ -60,66 +62,34 @@ self_compiler::Status CheckGraphObjectIds(const self_compiler::ir::Graph& graph)
 }
 
 self_compiler::Status CheckOpArity(const self_compiler::ir::Operation& op) {
-    const auto actual_input_count = op.inputs.size();
-    const auto actual_output_count = op.outputs.size();
+    const auto actual_input_count = static_cast<int>(op.inputs.size());
+    const auto actual_output_count = static_cast<int>(op.outputs.size());
 
-    if (op.kind == self_compiler::ir::OpKind::kInput) {
-        if (actual_input_count != 0) {
-            return self_compiler::Status::Error(
-                op.name + ": Input operation should not have any inputs, but has " +
-                std::to_string(actual_input_count));
-        }
-        if (actual_output_count != 1) {
-            return self_compiler::Status::Error(
-                op.name + ": Input operation should have exactly 1 output, but has " +
-                std::to_string(actual_output_count));
-        }
-    } else if (op.kind == self_compiler::ir::OpKind::kOutput) {
-        if (actual_input_count != 1) {
-            return self_compiler::Status::Error(
-                op.name + ": Output operation should have exactly 1 input, but has " +
-                std::to_string(actual_input_count));
-        }
-        if (actual_output_count != 0) {
-            return self_compiler::Status::Error(
-                op.name + ": Output operation should not have any outputs, but has " +
-                std::to_string(actual_output_count));
-        }
-    } else if (op.kind == self_compiler::ir::OpKind::kResidualAdd) {
-        if (actual_input_count != 2) {
-            return self_compiler::Status::Error(
-                op.name + ": ResidualAdd operation should have exactly 2 inputs, but has " +
-                std::to_string(actual_input_count));
-        }
-        if (actual_output_count != 1) {
-            return self_compiler::Status::Error(
-                op.name + ": ResidualAdd operation should have exactly 1 output, but has " +
-                std::to_string(actual_output_count));
-        }
-    } else if (op.kind == self_compiler::ir::OpKind::kTransformerBlock) {
-        if (actual_input_count != 1) {
-            return self_compiler::Status::Error(
-                op.name + ": TransformerBlock operation should have exactly 1 input, but has " +
-                std::to_string(actual_input_count));
-        }
-        if (actual_output_count != 1) {
-            return self_compiler::Status::Error(
-                op.name + ": TransformerBlock operation should have exactly 1 output, but has " +
-                std::to_string(actual_output_count));
-        }
-    } else if (op.kind == self_compiler::ir::OpKind::kUnknown) {
-        // ONNX 导入的未识别算子：各种算子的输入输出数量不同，不做 arity 限制
-    } else {
-        if (actual_input_count != 1) {
-            return self_compiler::Status::Error(
-                op.name + ": operation should have exactly 1 input, but has " +
-                std::to_string(actual_input_count));
-        }
-        if (actual_output_count != 1) {
-            return self_compiler::Status::Error(
-                op.name + ": operation should have exactly 1 output, but has " +
-                std::to_string(actual_output_count));
-        }
+    const auto* info = self_compiler::ir::OpRegistry::Instance().Find(op.kind);
+
+    // 未注册的算子（kUnknown 或新增但尚未注册的）：不做 arity 限制
+    if (!info) {
+        return self_compiler::Status::Ok();
+    }
+
+    if (actual_input_count < info->min_inputs) {
+        return self_compiler::Status::Error(
+            op.name + ": " + info->name + " requires at least " +
+            std::to_string(info->min_inputs) + " inputs, but has " +
+            std::to_string(actual_input_count));
+    }
+    if (actual_input_count > info->max_inputs) {
+        return self_compiler::Status::Error(
+            op.name + ": " + info->name + " allows at most " +
+            std::to_string(info->max_inputs) + " inputs, but has " +
+            std::to_string(actual_input_count));
+    }
+    // num_outputs == -1 表示不限制输出数量（如 Split）
+    if (info->num_outputs >= 0 && actual_output_count != info->num_outputs) {
+        return self_compiler::Status::Error(
+            op.name + ": " + info->name + " should have " +
+            std::to_string(info->num_outputs) + " outputs, but has " +
+            std::to_string(actual_output_count));
     }
 
     return self_compiler::Status::Ok();
@@ -320,22 +290,18 @@ self_compiler::Status CheckOpTensorSemantics(
 }
 
 self_compiler::Status CheckRequiredAttributes(const self_compiler::ir::Operation& op) {
-    if (op.kind != self_compiler::ir::OpKind::kTransformerBlock) {
+    const auto* info = self_compiler::ir::OpRegistry::Instance().Find(op.kind);
+
+    // 未注册的算子或没有必需属性的算子：跳过
+    if (!info || info->required_attributes.empty()) {
         return self_compiler::Status::Ok();
     }
 
-    const std::vector<std::string> required_attributes = {
-        "hidden_size",
-        "intermediate_size",
-        "num_attention_heads",
-        "num_key_value_heads",
-    };
-
-    for (const auto& attr : required_attributes) {
+    for (const auto& attr : info->required_attributes) {
         if (op.attributes.find(attr) == op.attributes.end()) {
             return self_compiler::Status::Error(
                 op.name + ": Missing required attribute '" + attr +
-                "' for " + self_compiler::ir::ToString(op.kind) + " operation");
+                "' for " + info->name + " operation");
         }
     }
 
@@ -375,18 +341,13 @@ int Attr_Stoi(const std::string& text) {
 }
 
 self_compiler::Status CheckAttributeValue(const self_compiler::ir::Operation& op) {
-    if (op.kind != self_compiler::ir::OpKind::kTransformerBlock) {
+    const auto* info = self_compiler::ir::OpRegistry::Instance().Find(op.kind);
+
+    if (!info || info->required_attributes.empty()) {
         return self_compiler::Status::Ok();
     }
 
-    const std::vector<std::string> required_attributes = {
-        "hidden_size",
-        "intermediate_size",
-        "num_attention_heads",
-        "num_key_value_heads",
-    };
-
-    for (const auto& attr : required_attributes) {
+    for (const auto& attr : info->required_attributes) {
         const auto it = op.attributes.find(attr);
         if (it == op.attributes.end()) {
             return self_compiler::Status::Error(
