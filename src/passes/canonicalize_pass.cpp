@@ -107,6 +107,8 @@ self_compiler::Status CheckOpArity(const self_compiler::ir::Operation& op) {
                 op.name + ": TransformerBlock operation should have exactly 1 output, but has " +
                 std::to_string(actual_output_count));
         }
+    } else if (op.kind == self_compiler::ir::OpKind::kUnknown) {
+        // ONNX 导入的未识别算子：各种算子的输入输出数量不同，不做 arity 限制
     } else {
         if (actual_input_count != 1) {
             return self_compiler::Status::Error(
@@ -170,15 +172,9 @@ self_compiler::Status CheckOpTensorSemantics(
 
     if (op.kind == self_compiler::ir::OpKind::kInput) {
         const auto& output = get_output(0);
-        if (!HasTensorRank(output, 2)) {
+        if (output.shape.dims.empty()) {
             return self_compiler::Status::Error(
-                op.name + ": Input output tensor should have rank 2, but has rank " +
-                std::to_string(output.shape.dims.size()));
-        }
-        if (output.dtype != self_compiler::ir::DataType::kInt32) {
-            return self_compiler::Status::Error(
-                op.name + ": Input output tensor should have dtype i32, but has " +
-                self_compiler::ir::ToString(output.dtype));
+                op.name + ": Input output tensor should not have empty shape");
         }
         return self_compiler::Status::Ok();
     }

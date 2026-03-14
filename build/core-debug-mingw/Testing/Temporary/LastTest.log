@@ -1,10 +1,10 @@
-Start testing: Mar 14 01:55 ÖĞ¹ú±ê×¼Ê±¼ä
+Start testing: Mar 14 14:53 ÖĞ¹ú±ê×¼Ê±¼ä
 ----------------------------------------------------------
 1/1 Testing: self_compiler_smoke
 1/1 Test: self_compiler_smoke
 Command: "D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw/self_compiler_cli.exe" "--mode" "demo"
 Directory: D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw
-"self_compiler_smoke" start time: Mar 14 01:55 ÖĞ¹ú±ê×¼Ê±¼ä
+"self_compiler_smoke" start time: Mar 14 14:53 ÖĞ¹ú±ê×¼Ê±¼ä
 Output:
 ----------------------------------------------------------
 ==== é«˜å±‚å›¾ ====
@@ -28,36 +28,57 @@ Output:
   [T1] hidden_states shape=[1, 16, 2048] dtype=bf16
   [T2] block_output shape=[1, 16, 2048] dtype=bf16
   [T3] logits shape=[1, 16, 128256] dtype=bf16
+  [T4] transformer_block_0.rmsnorm0_out shape=[1, 16, 2048] dtype=bf16
+  [T5] transformer_block_0.qkv_out shape=[1, 16, 3072] dtype=bf16
+  [T6] transformer_block_0.rope_out shape=[1, 16, 3072] dtype=bf16
+  [T7] transformer_block_0.attention_out shape=[1, 16, 2048] dtype=bf16
+  [T8] transformer_block_0.residual0_out shape=[1, 16, 2048] dtype=bf16
+  [T9] transformer_block_0.rmsnorm1_out shape=[1, 16, 2048] dtype=bf16
+  [T10] transformer_block_0.swiglu_out shape=[1, 16, 2048] dtype=bf16
 ç®—å­åˆ—è¡¨ï¼š
   [O0] input kind=Input inputs= outputs= T0
   [O1] embedding kind=Embedding inputs= T0 outputs= T1
-  [O2] transformer_block_0.rmsnorm0 kind=RmsNorm inputs= T1 outputs= T2
-  [O3] transformer_block_0.qkv kind=QkvProject inputs= T1 outputs= T2
-  [O4] transformer_block_0.rope kind=Rope inputs= T1 outputs= T2
-  [O5] transformer_block_0.attention kind=Attention inputs= T1 outputs= T2
-  [O6] transformer_block_0.residual0 kind=ResidualAdd inputs= T1 outputs= T2
-  [O7] transformer_block_0.rmsnorm1 kind=RmsNorm inputs= T1 outputs= T2
-  [O8] transformer_block_0.swiglu kind=SwiGLU inputs= T1 outputs= T2
-  [O9] transformer_block_0.residual1 kind=ResidualAdd inputs= T1 outputs= T2
+  [O2] transformer_block_0.rmsnorm0 kind=RmsNorm inputs= T1 outputs= T4
+  [O3] transformer_block_0.qkv_project kind=QkvProject inputs= T4 outputs= T5
+  [O4] transformer_block_0.rope kind=Rope inputs= T5 outputs= T6
+  [O5] transformer_block_0.attention kind=Attention inputs= T6 outputs= T7
+  [O6] transformer_block_0.residual0 kind=ResidualAdd inputs= T1 T7 outputs= T8
+  [O7] transformer_block_0.rmsnorm1 kind=RmsNorm inputs= T8 outputs= T9
+  [O8] transformer_block_0.swiglu kind=SwiGLU inputs= T9 outputs= T10
+  [O9] transformer_block_0.residual1 kind=ResidualAdd inputs= T8 T10 outputs= T2
   [O10] lm_head kind=LmHead inputs= T2 outputs= T3
   [O11] output kind=Output inputs= T3 outputs=
 
 ==== é™æ€å†…å­˜è§„åˆ’ ====
-total_bytes=4235328 peak_bytes=4235328
+total_bytes=4759616 peak_bytes=4759616
   input_ids offset=0 size=64
   hidden_states offset=64 size=65536
   block_output offset=65600 size=65536
   logits offset=131136 size=4104192
+  transformer_block_0.rmsnorm0_out offset=4235328 size=65536
+  transformer_block_0.qkv_out offset=4300864 size=98304
+  transformer_block_0.rope_out offset=4399168 size=98304
+  transformer_block_0.attention_out offset=4497472 size=65536
+  transformer_block_0.residual0_out offset=4563008 size=65536
+  transformer_block_0.rmsnorm1_out offset=4628544 size=65536
+  transformer_block_0.swiglu_out offset=4694080 size=65536
 
 ==== Toy Backend å‘½ä»¤æµ ====
 ALLOC input_ids 0 64
 ALLOC hidden_states 64 65536
 ALLOC block_output 65600 65536
 ALLOC logits 131136 4104192
+ALLOC transformer_block_0.rmsnorm0_out 4235328 65536
+ALLOC transformer_block_0.qkv_out 4300864 98304
+ALLOC transformer_block_0.rope_out 4399168 98304
+ALLOC transformer_block_0.attention_out 4497472 65536
+ALLOC transformer_block_0.residual0_out 4563008 65536
+ALLOC transformer_block_0.rmsnorm1_out 4628544 65536
+ALLOC transformer_block_0.swiglu_out 4694080 65536
 EXEC input Input
 EXEC embedding Embedding
 EXEC transformer_block_0.rmsnorm0 RmsNorm
-EXEC transformer_block_0.qkv QkvProject
+EXEC transformer_block_0.qkv_project QkvProject
 EXEC transformer_block_0.rope Rope
 EXEC transformer_block_0.attention Attention
 EXEC transformer_block_0.residual0 ResidualAdd
@@ -79,7 +100,7 @@ module {
   // ç®—å­: input kind=Input
   // ç®—å­: embedding kind=Embedding
   // ç®—å­: transformer_block_0.rmsnorm0 kind=RmsNorm
-  // ç®—å­: transformer_block_0.qkv kind=QkvProject
+  // ç®—å­: transformer_block_0.qkv_project kind=QkvProject
   // ç®—å­: transformer_block_0.rope kind=Rope
   // ç®—å­: transformer_block_0.attention kind=Attention
   // ç®—å­: transformer_block_0.residual0 kind=ResidualAdd
@@ -90,11 +111,11 @@ module {
   // ç®—å­: output kind=Output
 }
 <end of output>
-Test time =   0.02 sec
+Test time =   0.01 sec
 ----------------------------------------------------------
 Test Passed.
-"self_compiler_smoke" end time: Mar 14 01:55 ÖĞ¹ú±ê×¼Ê±¼ä
+"self_compiler_smoke" end time: Mar 14 14:53 ÖĞ¹ú±ê×¼Ê±¼ä
 "self_compiler_smoke" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Mar 14 01:55 ÖĞ¹ú±ê×¼Ê±¼ä
+End testing: Mar 14 14:53 ÖĞ¹ú±ê×¼Ê±¼ä

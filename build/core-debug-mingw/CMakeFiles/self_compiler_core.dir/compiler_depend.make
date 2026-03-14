@@ -1159,11 +1159,14 @@ CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj: D:/Ai_kern
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_iterator_base_types.h \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_map.h \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_multimap.h \
+  D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_multiset.h \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_pair.h \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_relops.h \
+  D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_set.h \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_tree.h \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_uninitialized.h \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_vector.h \
+  D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stream_iterator.h \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/streambuf.tcc \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/streambuf_iterator.h \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/string_view.tcc \
@@ -1176,6 +1179,7 @@ CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj: D:/Ai_kern
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cstdint \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cstdio \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cstdlib \
+  D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cstring \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cwchar \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/cwctype \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/debug/assertions.h \
@@ -1193,11 +1197,13 @@ CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj: D:/Ai_kern
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ios \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/iosfwd \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/istream \
+  D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/iterator \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/limits \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/map \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/new \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/optional \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/ostream \
+  D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/set \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/sstream \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/stdexcept \
   D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/stdlib.h \
@@ -1248,6 +1254,7 @@ CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj: D:/Ai_kern
   D:/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_directx.h \
   D:/mingw64/x86_64-w64-mingw32/include/sec_api/stdio_s.h \
   D:/mingw64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h \
+  D:/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
   D:/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
   D:/mingw64/x86_64-w64-mingw32/include/sec_api/wchar_s.h \
   D:/mingw64/x86_64-w64-mingw32/include/signal.h \
@@ -1255,6 +1262,7 @@ CMakeFiles/self_compiler_core.dir/src/frontend/onnx_importer.cpp.obj: D:/Ai_kern
   D:/mingw64/x86_64-w64-mingw32/include/stdint.h \
   D:/mingw64/x86_64-w64-mingw32/include/stdio.h \
   D:/mingw64/x86_64-w64-mingw32/include/stdlib.h \
+  D:/mingw64/x86_64-w64-mingw32/include/string.h \
   D:/mingw64/x86_64-w64-mingw32/include/swprintf.inl \
   D:/mingw64/x86_64-w64-mingw32/include/sys/timeb.h \
   D:/mingw64/x86_64-w64-mingw32/include/sys/types.h \
@@ -2519,6 +2527,8 @@ D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/atomic_lockfree_def
 
 D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/memoryfwd.h:
 
+D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_multiset.h:
+
 D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/nested_exception.h:
 
 D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/atomic_base.h:
@@ -2616,6 +2626,8 @@ D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_vector.h:
 D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/streambuf.tcc:
 
 D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/streambuf_iterator.h:
+
+D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/set:
 
 D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/string_view.tcc:
 
@@ -2868,6 +2880,8 @@ D:/mingw64/x86_64-w64-mingw32/include/time.h:
 D:/Ai_kernel/llama3/self_compiler/src/frontend/llama_config_importer.cpp:
 
 D:/Ai_kernel/llama3/self_compiler/src/frontend/onnx_importer.cpp:
+
+D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/stl_set.h:
 
 D:/Ai_kernel/llama3/self_compiler/src/frontend/transformer_block_builder.cpp:
 
