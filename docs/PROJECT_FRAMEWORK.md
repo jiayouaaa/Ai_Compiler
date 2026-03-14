@@ -2,23 +2,26 @@
 
 ## 1. 项目定位
 
-本项目把以下三个方向融合为**一个完整 AI 编译器项目**：
+本项目的最终目标是：**做一个可以实际部署到具体硬件的 AI 编译器。**
 
-1. `Transformer Block Mini Compiler`
-2. `Static Memory Planner`
-3. `MLIR dialect + lowering`
+不是演示项目，不是 PPT 原型。最终要能接收一个真实的模型文件（ONNX / Llama config），经过完整的编译流水线，生成可以在目标硬件上执行的指令。
 
-同时，项目的前端输入能力升级为：
+项目把三个方向融合为一条流水线：
 
-- 自定义模型 `JSON`
-- `ONNX`
-- 后续预留：`TFLite`、`StableHLO`、`MLIR`
+1. `多格式模型前端` — 导入 ONNX / JSON / Llama config，输出统一 Graph IR
+2. `图优化与 Lowering` — 算子融合、Transformer Block 展开、shape 推断
+3. `资源约束与代码生成` — 静态内存规划、buffer 复用、硬件指令生成
 
-最终目标不是做一个“算子演示玩具”，而是做一个**有清晰编译流水线、可扩展、可演示、可继续深挖**的 AI 编译器原型。
+前端输入能力：
+
+- `JsonImporter`：已实现
+- `OnnxImporter`：已实现（手写 protobuf 解码器，可导入真实 .onnx 文件）
+- `LlamaConfigImporter`：已实现
+- 预留：`TFLite`、`StableHLO`、`MLIR`
 
 项目核心问题：
 
-> 输入一个简化版 Transformer Block 或外部模型表示，如何经过前端导入、统一 IR、图优化、lowering、静态内存规划和 toy backend codegen，最终变成可执行的伪命令流？
+> 输入一个真实的模型文件，如何经过前端导入、统一 IR、图优化、lowering、静态内存规划和目标硬件代码生成，最终变成可以在硬件上执行的指令流？
 
 ---
 
@@ -109,22 +112,17 @@ self_compiler/
 
 - 定义 `Importer` 抽象
 - 支持不同输入源导入
-- 把“模型结构”翻译成“编译器可以处理的 `Graph/Op/Tensor`”
+- 把”模型结构”翻译成”编译器可以处理的 `Graph/Op/Tensor`”
 
 当前规划的 importer：
 
 - `TransformerBlockSpec` 直接建图
-- `JsonImporter`
-- `OnnxImporter`
+- `JsonImporter`：已实现
+- `OnnxImporter`：已实现（手写 protobuf 解码器，零外部依赖）
+- `LlamaConfigImporter`：已实现
 - 预留 `TFLiteImporter`
 - 预留 `StableHloImporter`
 - 预留 `MlirImporter`
-
-当前实现状态：
-
-- `JsonImporter`：**已实现最小可用版本**，支持从平铺 JSON 读取 `batch / sequence_length / hidden_size / intermediate_size / num_attention_heads / num_key_value_heads / vocab_size`
-- `OnnxImporter`：**已建立接口，但当前明确返回“未接入真实 ONNX 解析”**，避免伪造编译结果误导开发
-- `TFLite / StableHLO / MLIR`：仅保留扩展点
 
 ### 4.2 `ir/`
 
@@ -169,101 +167,233 @@ self_compiler/
 
 ---
 
-## 5. 编译流水线
+## 5. 编译流水线（当前 → 最终目标）
+
+### 当前已实现的流水线
 
 ```text
-外部输入（spec / json / onnx / ...）
+外部输入（spec / json / onnx / llama_config）
     ↓
-导入器
+多前端导入器（JsonImporter / OnnxImporter / LlamaConfigImporter）
+    ↓
+统一高层图 IR（Graph / Tensor / Operation）
+    ↓
+CanonicalizePass（合法性检查 + 属性规范化）
+    ↓
+LowerTransformerToRuntimePass（TransformerBlock → 8 个子 op）
+    ↓
+Live Interval Analysis（线性分析，无 reuse）
+    ↓
+Static Memory Planning（顺序分配，无 buffer 复用）
+    ↓
+Toy Backend 伪命令流（ALLOC + EXEC）
+```
+
+### 最终目标流水线（可实际部署）
+
+```text
+外部输入（ONNX / Llama config / TFLite / ...）
+    ↓
+多前端导入器
     ↓
 统一高层图 IR
     ↓
-Canonicalize Pass
+CanonicalizePass（合法性 + 规范化）
     ↓
-Lower TransformerBlock -> Runtime Ops
+算子识别 Pass（kUnknown → 具体 OpKind）
     ↓
-Live Interval Analysis
+算子融合 Pass（Conv+BN+Relu → FusedOp）
     ↓
-Static Memory Planning
+LowerTransformerToRuntimePass（TransformerBlock → 细粒度 op）
     ↓
-Toy 后端命令流
+Shape 推断 Pass（自动推导中间 tensor 的 shape）
     ↓
-报告导出 / 图导出 / （未来）MLIR 导出
+图分割 Pass（哪些 op 在加速器，哪些 fallback CPU）
+    ↓
+                    ┌─── 路径 A：自研后端 ───┐
+                    │                        │
+                    ↓                        │
+            权重量化 + 布局转换               │
+                    ↓                        │
+            Live Interval Analysis           │
+                    ↓                        │
+            Buffer Reuse 内存规划            │
+                    ↓                        │
+            DMA 调度 + 指令生成              │
+                    ↓                        │
+            目标硬件二进制                    │
+                    │                        │
+                    ├─── 路径 B：MLIR ───────┤
+                    │                        │
+                    ↓                        │
+            导出到 MLIR 自定义 dialect        │
+                    ↓                        │
+            MLIR lowering pipeline           │
+            (func → scf → arith → memref)   │
+                    ↓                        │
+            LLVM IR                          │
+                    ↓                        │
+            LLVM 后端代码生成                │
+                    ↓                        │
+            目标硬件二进制                    │
+                    └────────────────────────┘
 ```
 
 ---
 
-## 6. 当前阶段功能边界
+## 5.1 MLIR / LLVM 在流水线中的位置
 
-### 本阶段一定实现
+```text
+┌─────────────────────────────────────────────────────┐
+│                    我们的编译器                        │
+│                                                      │
+│  前端 → 高层图 IR → 图优化 → Lowering → 内存规划     │
+│                                                      │
+│         ↓ 到这里为止是我们自己写的                     │
+└─────────┬───────────────────────────────────────────┘
+          │
+          │ 导出到 MLIR（可选路径）
+          ↓
+┌─────────────────────────────────────────────────────┐
+│                    MLIR 层                            │
+│                                                      │
+│  我们的自定义 Dialect（self_compiler dialect）        │
+│    ↓ dialect conversion                              │
+│  标准 Dialect（func / arith / memref / scf）         │
+│    ↓ lowering                                        │
+│  LLVM Dialect                                        │
+│                                                      │
+│  MLIR 提供的能力：                                    │
+│  - 统一的 Pass 基础设施（不用自己写 PassManager）     │
+│  - 成熟的 Dialect 转换机制                            │
+│  - 内置的 canonicalization / CSE / DCE               │
+│  - 多层 IR 共存（高层 + 低层可以在同一个 module 里）  │
+└─────────┬───────────────────────────────────────────┘
+          │
+          │ LLVM Dialect → LLVM IR
+          ↓
+┌─────────────────────────────────────────────────────┐
+│                    LLVM 层                            │
+│                                                      │
+│  LLVM IR → 机器无关优化 → 指令选择 → 寄存器分配      │
+│    → 指令调度 → 目标代码生成                          │
+│                                                      │
+│  LLVM 提供的能力：                                    │
+│  - 成熟的 CPU 后端（x86 / ARM / RISC-V）            │
+│  - 指令级优化（循环展开、向量化、常量折叠）           │
+│  - 二进制生成（.o / .so / 可执行文件）                │
+│                                                      │
+│  LLVM 不提供的：                                      │
+│  - 图级优化（算子融合、内存规划 → 我们自己做）        │
+│  - NPU/专用加速器后端（→ 我们自己做）                │
+└─────────────────────────────────────────────────────┘
+```
 
-- 多前端 importer 架构
-- `TransformerBlockSpec` 直接建图
-- `JsonImporter` 最小可用实现
-- `OnnxImporter` 接口与错误边界
-- 高层图 IR
-- `PassManager`
-- 至少 1 个 canonicalize pass
-- 至少 1 个 lowering pass
-- live interval 分析框架
-- 静态内存规划框架
-- toy backend 命令流框架
-- CLI 主程序
-- 基于文件后缀的输入格式自动推断
+### 两条路径的选择
 
-### 本阶段保留伪代码 / 待你实现的部分
+| | 路径 A：自研后端 | 路径 B：经 MLIR/LLVM |
+|--|----------------|---------------------|
+| 适用场景 | NPU、DSP 等专用加速器 | CPU、GPU 等 LLVM 已支持的目标 |
+| 优势 | 完全控制指令生成、内存布局、DMA 调度 | 复用 LLVM 成熟的优化和代码生成 |
+| 劣势 | 所有后端工作都自己做 | 受限于 LLVM 支持的目标架构 |
+| 工业实例 | Arm Ethos-U Vela、华为 CANN | TVM → LLVM、IREE → LLVM |
 
-- 高质量 rewrite 规则集合
-- 完整 attention lowering 细节
-- 完整 buffer reuse 最优算法
-- 真正 ONNX protobuf 导入
-- 真正 TFLite / StableHLO / MLIR importer
-- 真正 MLIR dialect 定义与注册
-- 真正 LLVM/目标硬件 codegen
-
-也就是说：
-
-> **这不是演示 PPT 项目，而是“骨架真实、关键逻辑留给你亲手实现”的编译器训练项目。**
+**两条路径不互斥。** 真实的 AI 编译器通常同时支持：图中大部分 op 走自研加速器后端，少量不支持的 op fallback 到 CPU（经 LLVM 生成 CPU 代码）。
 
 ---
 
-## 7. 开发顺序建议
+## 6. 已完成 vs 待实现
 
-### Phase 1：先把编译器骨架跑通
+### 已完成
 
-- `Graph / Tensor / Operation` 跑通
-- CLI 能从 `spec / json` 两类真实入口进入编译流水线
-- `PassManager` 能跑 pass
-- backend 能输出伪命令流
+- 多前端 importer 架构 + 三个真实 importer（Json / ONNX / LlamaConfig）
+- 高层图 IR（Graph / Tensor / Operation）
+- PassManager + CanonicalizePass（9+ 条规则）
+- LowerTransformerToRuntimePass（TransformerBlock → 8 个子 op，真实 shape + 数据依赖）
+- Live Interval 分析 + 静态内存顺序分配
+- Toy Backend 伪命令流
+- CLI 主程序 + CTest 冒烟测试
+- 基于文件后缀的输入格式自动推断
 
-### Phase 2：补真实 importer
+### 待实现（按优先级排序）
 
-- 先继续增强 `JsonImporter`
-- 再补 `OnnxImporter`
-- importer 输出必须统一落到 `Graph IR`
+#### 近期（补全 lowering + 图优化）
 
-### Phase 3：补 Transformer Block lowering
+- 算子属性解析（ONNX 节点的 kernel_size、axis 等）
+- 算子识别 Pass（kUnknown → 具体 OpKind）
+- 权重 tensor 建模（让子 op 的 inputs 包含 weight tensor）
+- Attention 细拆（matmul → scale → mask → softmax → matmul → output_proj）
+- Shape 推断 Pass（自动推导缺失的中间 tensor shape）
+- Lowering 后验证 Pass
 
-- 把高层 `TransformerBlock` 展开成：
-  - `RMSNorm`
-  - `QKV projections`
-  - `RoPE`
-  - `Attention`
-  - `ResidualAdd`
-  - `SwiGLU`
-  - `LMHead`（可选不在 block 内）
+#### 中期（资源优化 + 真实后端）
 
-### Phase 4：补 Memory Planner
+- Buffer reuse 内存规划（greedy / best-fit allocator）
+- 算子融合 Pass（识别常见融合模式）
+- 图分割 Pass（加速器 / CPU fallback 分界）
+- 权重量化框架（float32 → int8）
+- 真实硬件后端（替代 Toy Backend，生成可执行指令）
 
-- 先实现最简单的线性分配
-- 再实现 live interval
-- 再做 buffer reuse
-- 再考虑多 memory region
+#### 远期（MLIR 集成 + 产品化）
 
-### Phase 5：补 MLIR bridge
+- MLIR 自定义 dialect 定义与注册
+- MLIR lowering pipeline（dialect → func/arith/memref → LLVM）
+- LLVM 后端代码生成
+- DMA 调度与计算-搬运重叠
+- Runtime 集成（内存管理 / 同步 / 错误处理）
 
-- 先把 IR dump 成类似 MLIR 的 textual form
-- 再真正接 MLIR dialect / conversion
+---
+
+## 7. 开发路线
+
+### Phase 1：编译器骨架 ✅ 已完成
+
+- Graph / Tensor / Operation 跑通
+- CLI 能从 spec / json 两类入口进入编译流水线
+- PassManager 能跑 pass
+- Backend 能输出伪命令流
+
+### Phase 2：真实 importer ✅ 已完成
+
+- JsonImporter、LlamaConfigImporter、OnnxImporter 均已实现
+- OnnxImporter 使用手写 protobuf 解码器，可导入真实 .onnx 文件
+- 所有 importer 输出统一落到 Graph IR
+
+### Phase 3：Transformer Block lowering ✅ 第一版完成
+
+- TransformerBlock 展开为 8 个子 op
+- 真实 shape（qkv_out 为 [B,S,Q+K+V]）
+- 残差跳跃连接、tensor 引用重建
+- 待补：权重 tensor、attention 细拆、lowering 后验证
+
+### Phase 4：图优化 Pass 补全 ← 当前阶段
+
+- 算子识别（kUnknown → 具体 OpKind）
+- Shape 推断
+- 算子融合
+- 图分割
+
+### Phase 5：内存优化
+
+- Live interval 精确分析
+- Buffer reuse（greedy / best-fit）
+- 多 memory region 支持
+
+### Phase 6：真实硬件后端 — Arm Ethos-U55 NPU
+
+- 目标硬件：Arm Ethos-U55
+- 验证环境：Corstone-300 FVP（免费模拟器）
+- 参考编译器：`D:\Ai_kernel\Ai_Compiler`（Vela/Regor）
+- 权重量化（float32 → int8）
+- 算子支持检查（Ethos-U55 支持的算子集 vs 需要 CPU fallback 的算子）
+- 命令流生成（替代 ToyBackend，生成 Ethos-U55 command stream）
+- DMA 调度 + SRAM 分块搬运
+
+### Phase 7：MLIR 集成（可选保留，不在主线）
+
+- 全自研路线已确定，MLIR 不作为主要依赖
+- 保留 MLIR bridge 接口，后续可作为对照实验或学术扩展
+- 如需启用：定义自定义 dialect → lowering 到标准 dialect → 导出 LLVM IR
 
 ---
 

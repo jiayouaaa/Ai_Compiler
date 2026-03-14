@@ -1,62 +1,918 @@
 ﻿==== 高层图 ====
 图结构导出
 张量列表：
-  [T0] input_ids shape=[1, 16] dtype=i32
-  [T1] hidden_states shape=[1, 16, 2048] dtype=bf16
-  [T2] block_output shape=[1, 16, 2048] dtype=bf16
-  [T3] logits shape=[1, 16, 128256] dtype=bf16
+  [T0] data shape=[1, 3, 224, 224] dtype=f32
+  [T1] flatten_170 shape=[1] dtype=f32
+  [T2] resnetv15_batchnorm0_beta shape=[64] dtype=f32
+  [T3] resnetv15_batchnorm0_fwd shape=[1] dtype=f32
+  [T4] resnetv15_batchnorm0_gamma shape=[64] dtype=f32
+  [T5] resnetv15_batchnorm0_running_mean shape=[64] dtype=f32
+  [T6] resnetv15_batchnorm0_running_var shape=[64] dtype=f32
+  [T7] resnetv15_conv0_fwd shape=[1] dtype=f32
+  [T8] resnetv15_conv0_weight shape=[64, 3, 7, 7] dtype=f32
+  [T9] resnetv15_dense0_bias shape=[1000] dtype=f32
+  [T10] resnetv15_dense0_fwd shape=[1, 1000] dtype=f32
+  [T11] resnetv15_dense0_weight shape=[1000, 512] dtype=f32
+  [T12] resnetv15_pool0_fwd shape=[1] dtype=f32
+  [T13] resnetv15_pool1_fwd shape=[1] dtype=f32
+  [T14] resnetv15_relu0_fwd shape=[1] dtype=f32
+  [T15] resnetv15_stage1__plus0 shape=[1] dtype=f32
+  [T16] resnetv15_stage1__plus1 shape=[1] dtype=f32
+  [T17] resnetv15_stage1_activation0 shape=[1] dtype=f32
+  [T18] resnetv15_stage1_activation1 shape=[1] dtype=f32
+  [T19] resnetv15_stage1_batchnorm0_beta shape=[64] dtype=f32
+  [T20] resnetv15_stage1_batchnorm0_fwd shape=[1] dtype=f32
+  [T21] resnetv15_stage1_batchnorm0_gamma shape=[64] dtype=f32
+  [T22] resnetv15_stage1_batchnorm0_running_mean shape=[64] dtype=f32
+  [T23] resnetv15_stage1_batchnorm0_running_var shape=[64] dtype=f32
+  [T24] resnetv15_stage1_batchnorm1_beta shape=[64] dtype=f32
+  [T25] resnetv15_stage1_batchnorm1_fwd shape=[1] dtype=f32
+  [T26] resnetv15_stage1_batchnorm1_gamma shape=[64] dtype=f32
+  [T27] resnetv15_stage1_batchnorm1_running_mean shape=[64] dtype=f32
+  [T28] resnetv15_stage1_batchnorm1_running_var shape=[64] dtype=f32
+  [T29] resnetv15_stage1_batchnorm2_beta shape=[64] dtype=f32
+  [T30] resnetv15_stage1_batchnorm2_fwd shape=[1] dtype=f32
+  [T31] resnetv15_stage1_batchnorm2_gamma shape=[64] dtype=f32
+  [T32] resnetv15_stage1_batchnorm2_running_mean shape=[64] dtype=f32
+  [T33] resnetv15_stage1_batchnorm2_running_var shape=[64] dtype=f32
+  [T34] resnetv15_stage1_batchnorm3_beta shape=[64] dtype=f32
+  [T35] resnetv15_stage1_batchnorm3_fwd shape=[1] dtype=f32
+  [T36] resnetv15_stage1_batchnorm3_gamma shape=[64] dtype=f32
+  [T37] resnetv15_stage1_batchnorm3_running_mean shape=[64] dtype=f32
+  [T38] resnetv15_stage1_batchnorm3_running_var shape=[64] dtype=f32
+  [T39] resnetv15_stage1_conv0_fwd shape=[1] dtype=f32
+  [T40] resnetv15_stage1_conv0_weight shape=[64, 64, 3, 3] dtype=f32
+  [T41] resnetv15_stage1_conv1_fwd shape=[1] dtype=f32
+  [T42] resnetv15_stage1_conv1_weight shape=[64, 64, 3, 3] dtype=f32
+  [T43] resnetv15_stage1_conv2_fwd shape=[1] dtype=f32
+  [T44] resnetv15_stage1_conv2_weight shape=[64, 64, 3, 3] dtype=f32
+  [T45] resnetv15_stage1_conv3_fwd shape=[1] dtype=f32
+  [T46] resnetv15_stage1_conv3_weight shape=[64, 64, 3, 3] dtype=f32
+  [T47] resnetv15_stage1_relu0_fwd shape=[1] dtype=f32
+  [T48] resnetv15_stage1_relu1_fwd shape=[1] dtype=f32
+  [T49] resnetv15_stage2__plus0 shape=[1] dtype=f32
+  [T50] resnetv15_stage2__plus1 shape=[1] dtype=f32
+  [T51] resnetv15_stage2_activation0 shape=[1] dtype=f32
+  [T52] resnetv15_stage2_activation1 shape=[1] dtype=f32
+  [T53] resnetv15_stage2_batchnorm0_beta shape=[128] dtype=f32
+  [T54] resnetv15_stage2_batchnorm0_fwd shape=[1] dtype=f32
+  [T55] resnetv15_stage2_batchnorm0_gamma shape=[128] dtype=f32
+  [T56] resnetv15_stage2_batchnorm0_running_mean shape=[128] dtype=f32
+  [T57] resnetv15_stage2_batchnorm0_running_var shape=[128] dtype=f32
+  [T58] resnetv15_stage2_batchnorm1_beta shape=[128] dtype=f32
+  [T59] resnetv15_stage2_batchnorm1_fwd shape=[1] dtype=f32
+  [T60] resnetv15_stage2_batchnorm1_gamma shape=[128] dtype=f32
+  [T61] resnetv15_stage2_batchnorm1_running_mean shape=[128] dtype=f32
+  [T62] resnetv15_stage2_batchnorm1_running_var shape=[128] dtype=f32
+  [T63] resnetv15_stage2_batchnorm2_beta shape=[128] dtype=f32
+  [T64] resnetv15_stage2_batchnorm2_fwd shape=[1] dtype=f32
+  [T65] resnetv15_stage2_batchnorm2_gamma shape=[128] dtype=f32
+  [T66] resnetv15_stage2_batchnorm2_running_mean shape=[128] dtype=f32
+  [T67] resnetv15_stage2_batchnorm2_running_var shape=[128] dtype=f32
+  [T68] resnetv15_stage2_batchnorm3_beta shape=[128] dtype=f32
+  [T69] resnetv15_stage2_batchnorm3_fwd shape=[1] dtype=f32
+  [T70] resnetv15_stage2_batchnorm3_gamma shape=[128] dtype=f32
+  [T71] resnetv15_stage2_batchnorm3_running_mean shape=[128] dtype=f32
+  [T72] resnetv15_stage2_batchnorm3_running_var shape=[128] dtype=f32
+  [T73] resnetv15_stage2_batchnorm4_beta shape=[128] dtype=f32
+  [T74] resnetv15_stage2_batchnorm4_fwd shape=[1] dtype=f32
+  [T75] resnetv15_stage2_batchnorm4_gamma shape=[128] dtype=f32
+  [T76] resnetv15_stage2_batchnorm4_running_mean shape=[128] dtype=f32
+  [T77] resnetv15_stage2_batchnorm4_running_var shape=[128] dtype=f32
+  [T78] resnetv15_stage2_conv0_fwd shape=[1] dtype=f32
+  [T79] resnetv15_stage2_conv0_weight shape=[128, 64, 3, 3] dtype=f32
+  [T80] resnetv15_stage2_conv1_fwd shape=[1] dtype=f32
+  [T81] resnetv15_stage2_conv1_weight shape=[128, 128, 3, 3] dtype=f32
+  [T82] resnetv15_stage2_conv2_fwd shape=[1] dtype=f32
+  [T83] resnetv15_stage2_conv2_weight shape=[128, 64, 1, 1] dtype=f32
+  [T84] resnetv15_stage2_conv3_fwd shape=[1] dtype=f32
+  [T85] resnetv15_stage2_conv3_weight shape=[128, 128, 3, 3] dtype=f32
+  [T86] resnetv15_stage2_conv4_fwd shape=[1] dtype=f32
+  [T87] resnetv15_stage2_conv4_weight shape=[128, 128, 3, 3] dtype=f32
+  [T88] resnetv15_stage2_relu0_fwd shape=[1] dtype=f32
+  [T89] resnetv15_stage2_relu1_fwd shape=[1] dtype=f32
+  [T90] resnetv15_stage3__plus0 shape=[1] dtype=f32
+  [T91] resnetv15_stage3__plus1 shape=[1] dtype=f32
+  [T92] resnetv15_stage3_activation0 shape=[1] dtype=f32
+  [T93] resnetv15_stage3_activation1 shape=[1] dtype=f32
+  [T94] resnetv15_stage3_batchnorm0_beta shape=[256] dtype=f32
+  [T95] resnetv15_stage3_batchnorm0_fwd shape=[1] dtype=f32
+  [T96] resnetv15_stage3_batchnorm0_gamma shape=[256] dtype=f32
+  [T97] resnetv15_stage3_batchnorm0_running_mean shape=[256] dtype=f32
+  [T98] resnetv15_stage3_batchnorm0_running_var shape=[256] dtype=f32
+  [T99] resnetv15_stage3_batchnorm1_beta shape=[256] dtype=f32
+  [T100] resnetv15_stage3_batchnorm1_fwd shape=[1] dtype=f32
+  [T101] resnetv15_stage3_batchnorm1_gamma shape=[256] dtype=f32
+  [T102] resnetv15_stage3_batchnorm1_running_mean shape=[256] dtype=f32
+  [T103] resnetv15_stage3_batchnorm1_running_var shape=[256] dtype=f32
+  [T104] resnetv15_stage3_batchnorm2_beta shape=[256] dtype=f32
+  [T105] resnetv15_stage3_batchnorm2_fwd shape=[1] dtype=f32
+  [T106] resnetv15_stage3_batchnorm2_gamma shape=[256] dtype=f32
+  [T107] resnetv15_stage3_batchnorm2_running_mean shape=[256] dtype=f32
+  [T108] resnetv15_stage3_batchnorm2_running_var shape=[256] dtype=f32
+  [T109] resnetv15_stage3_batchnorm3_beta shape=[256] dtype=f32
+  [T110] resnetv15_stage3_batchnorm3_fwd shape=[1] dtype=f32
+  [T111] resnetv15_stage3_batchnorm3_gamma shape=[256] dtype=f32
+  [T112] resnetv15_stage3_batchnorm3_running_mean shape=[256] dtype=f32
+  [T113] resnetv15_stage3_batchnorm3_running_var shape=[256] dtype=f32
+  [T114] resnetv15_stage3_batchnorm4_beta shape=[256] dtype=f32
+  [T115] resnetv15_stage3_batchnorm4_fwd shape=[1] dtype=f32
+  [T116] resnetv15_stage3_batchnorm4_gamma shape=[256] dtype=f32
+  [T117] resnetv15_stage3_batchnorm4_running_mean shape=[256] dtype=f32
+  [T118] resnetv15_stage3_batchnorm4_running_var shape=[256] dtype=f32
+  [T119] resnetv15_stage3_conv0_fwd shape=[1] dtype=f32
+  [T120] resnetv15_stage3_conv0_weight shape=[256, 128, 3, 3] dtype=f32
+  [T121] resnetv15_stage3_conv1_fwd shape=[1] dtype=f32
+  [T122] resnetv15_stage3_conv1_weight shape=[256, 256, 3, 3] dtype=f32
+  [T123] resnetv15_stage3_conv2_fwd shape=[1] dtype=f32
+  [T124] resnetv15_stage3_conv2_weight shape=[256, 128, 1, 1] dtype=f32
+  [T125] resnetv15_stage3_conv3_fwd shape=[1] dtype=f32
+  [T126] resnetv15_stage3_conv3_weight shape=[256, 256, 3, 3] dtype=f32
+  [T127] resnetv15_stage3_conv4_fwd shape=[1] dtype=f32
+  [T128] resnetv15_stage3_conv4_weight shape=[256, 256, 3, 3] dtype=f32
+  [T129] resnetv15_stage3_relu0_fwd shape=[1] dtype=f32
+  [T130] resnetv15_stage3_relu1_fwd shape=[1] dtype=f32
+  [T131] resnetv15_stage4__plus0 shape=[1] dtype=f32
+  [T132] resnetv15_stage4__plus1 shape=[1] dtype=f32
+  [T133] resnetv15_stage4_activation0 shape=[1] dtype=f32
+  [T134] resnetv15_stage4_activation1 shape=[1] dtype=f32
+  [T135] resnetv15_stage4_batchnorm0_beta shape=[512] dtype=f32
+  [T136] resnetv15_stage4_batchnorm0_fwd shape=[1] dtype=f32
+  [T137] resnetv15_stage4_batchnorm0_gamma shape=[512] dtype=f32
+  [T138] resnetv15_stage4_batchnorm0_running_mean shape=[512] dtype=f32
+  [T139] resnetv15_stage4_batchnorm0_running_var shape=[512] dtype=f32
+  [T140] resnetv15_stage4_batchnorm1_beta shape=[512] dtype=f32
+  [T141] resnetv15_stage4_batchnorm1_fwd shape=[1] dtype=f32
+  [T142] resnetv15_stage4_batchnorm1_gamma shape=[512] dtype=f32
+  [T143] resnetv15_stage4_batchnorm1_running_mean shape=[512] dtype=f32
+  [T144] resnetv15_stage4_batchnorm1_running_var shape=[512] dtype=f32
+  [T145] resnetv15_stage4_batchnorm2_beta shape=[512] dtype=f32
+  [T146] resnetv15_stage4_batchnorm2_fwd shape=[1] dtype=f32
+  [T147] resnetv15_stage4_batchnorm2_gamma shape=[512] dtype=f32
+  [T148] resnetv15_stage4_batchnorm2_running_mean shape=[512] dtype=f32
+  [T149] resnetv15_stage4_batchnorm2_running_var shape=[512] dtype=f32
+  [T150] resnetv15_stage4_batchnorm3_beta shape=[512] dtype=f32
+  [T151] resnetv15_stage4_batchnorm3_fwd shape=[1] dtype=f32
+  [T152] resnetv15_stage4_batchnorm3_gamma shape=[512] dtype=f32
+  [T153] resnetv15_stage4_batchnorm3_running_mean shape=[512] dtype=f32
+  [T154] resnetv15_stage4_batchnorm3_running_var shape=[512] dtype=f32
+  [T155] resnetv15_stage4_batchnorm4_beta shape=[512] dtype=f32
+  [T156] resnetv15_stage4_batchnorm4_fwd shape=[1] dtype=f32
+  [T157] resnetv15_stage4_batchnorm4_gamma shape=[512] dtype=f32
+  [T158] resnetv15_stage4_batchnorm4_running_mean shape=[512] dtype=f32
+  [T159] resnetv15_stage4_batchnorm4_running_var shape=[512] dtype=f32
+  [T160] resnetv15_stage4_conv0_fwd shape=[1] dtype=f32
+  [T161] resnetv15_stage4_conv0_weight shape=[512, 256, 3, 3] dtype=f32
+  [T162] resnetv15_stage4_conv1_fwd shape=[1] dtype=f32
+  [T163] resnetv15_stage4_conv1_weight shape=[512, 512, 3, 3] dtype=f32
+  [T164] resnetv15_stage4_conv2_fwd shape=[1] dtype=f32
+  [T165] resnetv15_stage4_conv2_weight shape=[512, 256, 1, 1] dtype=f32
+  [T166] resnetv15_stage4_conv3_fwd shape=[1] dtype=f32
+  [T167] resnetv15_stage4_conv3_weight shape=[512, 512, 3, 3] dtype=f32
+  [T168] resnetv15_stage4_conv4_fwd shape=[1] dtype=f32
+  [T169] resnetv15_stage4_conv4_weight shape=[512, 512, 3, 3] dtype=f32
+  [T170] resnetv15_stage4_relu0_fwd shape=[1] dtype=f32
+  [T171] resnetv15_stage4_relu1_fwd shape=[1] dtype=f32
 算子列表：
-  [O0] input kind=Input inputs= outputs= T0
-  [O1] embedding kind=Embedding inputs= T0 outputs= T1
-  [O2] transformer_block_0 kind=TransformerBlock inputs= T1 outputs= T2
-  [O3] lm_head kind=LmHead inputs= T2 outputs= T3
-  [O4] output kind=Output inputs= T3 outputs=
+  [O0] input.data kind=Input inputs= outputs= T0
+  [O1] resnetv15_conv0_fwd kind=Unknown inputs= T0 T8 outputs= T7
+  [O2] resnetv15_batchnorm0_fwd kind=Unknown inputs= T7 T4 T2 T5 T6 outputs= T3
+  [O3] resnetv15_relu0_fwd kind=Unknown inputs= T3 outputs= T14
+  [O4] resnetv15_pool0_fwd kind=Unknown inputs= T14 outputs= T12
+  [O5] resnetv15_stage1_conv0_fwd kind=Unknown inputs= T12 T40 outputs= T39
+  [O6] resnetv15_stage1_batchnorm0_fwd kind=Unknown inputs= T39 T21 T19 T22 T23 outputs= T20
+  [O7] resnetv15_stage1_relu0_fwd kind=Unknown inputs= T20 outputs= T47
+  [O8] resnetv15_stage1_conv1_fwd kind=Unknown inputs= T47 T42 outputs= T41
+  [O9] resnetv15_stage1_batchnorm1_fwd kind=Unknown inputs= T41 T26 T24 T27 T28 outputs= T25
+  [O10] resnetv15_stage1__plus0 kind=Unknown inputs= T12 T25 outputs= T15
+  [O11] resnetv15_stage1_activation0 kind=Unknown inputs= T15 outputs= T17
+  [O12] resnetv15_stage1_conv2_fwd kind=Unknown inputs= T17 T44 outputs= T43
+  [O13] resnetv15_stage1_batchnorm2_fwd kind=Unknown inputs= T43 T31 T29 T32 T33 outputs= T30
+  [O14] resnetv15_stage1_relu1_fwd kind=Unknown inputs= T30 outputs= T48
+  [O15] resnetv15_stage1_conv3_fwd kind=Unknown inputs= T48 T46 outputs= T45
+  [O16] resnetv15_stage1_batchnorm3_fwd kind=Unknown inputs= T45 T36 T34 T37 T38 outputs= T35
+  [O17] resnetv15_stage1__plus1 kind=Unknown inputs= T17 T35 outputs= T16
+  [O18] resnetv15_stage1_activation1 kind=Unknown inputs= T16 outputs= T18
+  [O19] resnetv15_stage2_conv2_fwd kind=Unknown inputs= T18 T83 outputs= T82
+  [O20] resnetv15_stage2_batchnorm2_fwd kind=Unknown inputs= T82 T65 T63 T66 T67 outputs= T64
+  [O21] resnetv15_stage2_conv0_fwd kind=Unknown inputs= T18 T79 outputs= T78
+  [O22] resnetv15_stage2_batchnorm0_fwd kind=Unknown inputs= T78 T55 T53 T56 T57 outputs= T54
+  [O23] resnetv15_stage2_relu0_fwd kind=Unknown inputs= T54 outputs= T88
+  [O24] resnetv15_stage2_conv1_fwd kind=Unknown inputs= T88 T81 outputs= T80
+  [O25] resnetv15_stage2_batchnorm1_fwd kind=Unknown inputs= T80 T60 T58 T61 T62 outputs= T59
+  [O26] resnetv15_stage2__plus0 kind=Unknown inputs= T64 T59 outputs= T49
+  [O27] resnetv15_stage2_activation0 kind=Unknown inputs= T49 outputs= T51
+  [O28] resnetv15_stage2_conv3_fwd kind=Unknown inputs= T51 T85 outputs= T84
+  [O29] resnetv15_stage2_batchnorm3_fwd kind=Unknown inputs= T84 T70 T68 T71 T72 outputs= T69
+  [O30] resnetv15_stage2_relu1_fwd kind=Unknown inputs= T69 outputs= T89
+  [O31] resnetv15_stage2_conv4_fwd kind=Unknown inputs= T89 T87 outputs= T86
+  [O32] resnetv15_stage2_batchnorm4_fwd kind=Unknown inputs= T86 T75 T73 T76 T77 outputs= T74
+  [O33] resnetv15_stage2__plus1 kind=Unknown inputs= T51 T74 outputs= T50
+  [O34] resnetv15_stage2_activation1 kind=Unknown inputs= T50 outputs= T52
+  [O35] resnetv15_stage3_conv2_fwd kind=Unknown inputs= T52 T124 outputs= T123
+  [O36] resnetv15_stage3_batchnorm2_fwd kind=Unknown inputs= T123 T106 T104 T107 T108 outputs= T105
+  [O37] resnetv15_stage3_conv0_fwd kind=Unknown inputs= T52 T120 outputs= T119
+  [O38] resnetv15_stage3_batchnorm0_fwd kind=Unknown inputs= T119 T96 T94 T97 T98 outputs= T95
+  [O39] resnetv15_stage3_relu0_fwd kind=Unknown inputs= T95 outputs= T129
+  [O40] resnetv15_stage3_conv1_fwd kind=Unknown inputs= T129 T122 outputs= T121
+  [O41] resnetv15_stage3_batchnorm1_fwd kind=Unknown inputs= T121 T101 T99 T102 T103 outputs= T100
+  [O42] resnetv15_stage3__plus0 kind=Unknown inputs= T105 T100 outputs= T90
+  [O43] resnetv15_stage3_activation0 kind=Unknown inputs= T90 outputs= T92
+  [O44] resnetv15_stage3_conv3_fwd kind=Unknown inputs= T92 T126 outputs= T125
+  [O45] resnetv15_stage3_batchnorm3_fwd kind=Unknown inputs= T125 T111 T109 T112 T113 outputs= T110
+  [O46] resnetv15_stage3_relu1_fwd kind=Unknown inputs= T110 outputs= T130
+  [O47] resnetv15_stage3_conv4_fwd kind=Unknown inputs= T130 T128 outputs= T127
+  [O48] resnetv15_stage3_batchnorm4_fwd kind=Unknown inputs= T127 T116 T114 T117 T118 outputs= T115
+  [O49] resnetv15_stage3__plus1 kind=Unknown inputs= T92 T115 outputs= T91
+  [O50] resnetv15_stage3_activation1 kind=Unknown inputs= T91 outputs= T93
+  [O51] resnetv15_stage4_conv2_fwd kind=Unknown inputs= T93 T165 outputs= T164
+  [O52] resnetv15_stage4_batchnorm2_fwd kind=Unknown inputs= T164 T147 T145 T148 T149 outputs= T146
+  [O53] resnetv15_stage4_conv0_fwd kind=Unknown inputs= T93 T161 outputs= T160
+  [O54] resnetv15_stage4_batchnorm0_fwd kind=Unknown inputs= T160 T137 T135 T138 T139 outputs= T136
+  [O55] resnetv15_stage4_relu0_fwd kind=Unknown inputs= T136 outputs= T170
+  [O56] resnetv15_stage4_conv1_fwd kind=Unknown inputs= T170 T163 outputs= T162
+  [O57] resnetv15_stage4_batchnorm1_fwd kind=Unknown inputs= T162 T142 T140 T143 T144 outputs= T141
+  [O58] resnetv15_stage4__plus0 kind=Unknown inputs= T146 T141 outputs= T131
+  [O59] resnetv15_stage4_activation0 kind=Unknown inputs= T131 outputs= T133
+  [O60] resnetv15_stage4_conv3_fwd kind=Unknown inputs= T133 T167 outputs= T166
+  [O61] resnetv15_stage4_batchnorm3_fwd kind=Unknown inputs= T166 T152 T150 T153 T154 outputs= T151
+  [O62] resnetv15_stage4_relu1_fwd kind=Unknown inputs= T151 outputs= T171
+  [O63] resnetv15_stage4_conv4_fwd kind=Unknown inputs= T171 T169 outputs= T168
+  [O64] resnetv15_stage4_batchnorm4_fwd kind=Unknown inputs= T168 T157 T155 T158 T159 outputs= T156
+  [O65] resnetv15_stage4__plus1 kind=Unknown inputs= T133 T156 outputs= T132
+  [O66] resnetv15_stage4_activation1 kind=Unknown inputs= T132 outputs= T134
+  [O67] resnetv15_pool1_fwd kind=Unknown inputs= T134 outputs= T13
+  [O68] flatten_170 kind=Unknown inputs= T13 outputs= T1
+  [O69] resnetv15_dense0_fwd kind=Unknown inputs= T1 T11 T9 outputs= T10
+  [O70] output.resnetv15_dense0_fwd kind=Output inputs= T10 outputs=
 
 ==== Lowering 之后的图 ====
 图结构导出
 张量列表：
-  [T0] input_ids shape=[1, 16] dtype=i32
-  [T1] hidden_states shape=[1, 16, 2048] dtype=bf16
-  [T2] block_output shape=[1, 16, 2048] dtype=bf16
-  [T3] logits shape=[1, 16, 128256] dtype=bf16
+  [T0] data shape=[1, 3, 224, 224] dtype=f32
+  [T1] flatten_170 shape=[1] dtype=f32
+  [T2] resnetv15_batchnorm0_beta shape=[64] dtype=f32
+  [T3] resnetv15_batchnorm0_fwd shape=[1] dtype=f32
+  [T4] resnetv15_batchnorm0_gamma shape=[64] dtype=f32
+  [T5] resnetv15_batchnorm0_running_mean shape=[64] dtype=f32
+  [T6] resnetv15_batchnorm0_running_var shape=[64] dtype=f32
+  [T7] resnetv15_conv0_fwd shape=[1] dtype=f32
+  [T8] resnetv15_conv0_weight shape=[64, 3, 7, 7] dtype=f32
+  [T9] resnetv15_dense0_bias shape=[1000] dtype=f32
+  [T10] resnetv15_dense0_fwd shape=[1, 1000] dtype=f32
+  [T11] resnetv15_dense0_weight shape=[1000, 512] dtype=f32
+  [T12] resnetv15_pool0_fwd shape=[1] dtype=f32
+  [T13] resnetv15_pool1_fwd shape=[1] dtype=f32
+  [T14] resnetv15_relu0_fwd shape=[1] dtype=f32
+  [T15] resnetv15_stage1_plus0 shape=[1] dtype=f32
+  [T16] resnetv15_stage1_plus1 shape=[1] dtype=f32
+  [T17] resnetv15_stage1_activation0 shape=[1] dtype=f32
+  [T18] resnetv15_stage1_activation1 shape=[1] dtype=f32
+  [T19] resnetv15_stage1_batchnorm0_beta shape=[64] dtype=f32
+  [T20] resnetv15_stage1_batchnorm0_fwd shape=[1] dtype=f32
+  [T21] resnetv15_stage1_batchnorm0_gamma shape=[64] dtype=f32
+  [T22] resnetv15_stage1_batchnorm0_running_mean shape=[64] dtype=f32
+  [T23] resnetv15_stage1_batchnorm0_running_var shape=[64] dtype=f32
+  [T24] resnetv15_stage1_batchnorm1_beta shape=[64] dtype=f32
+  [T25] resnetv15_stage1_batchnorm1_fwd shape=[1] dtype=f32
+  [T26] resnetv15_stage1_batchnorm1_gamma shape=[64] dtype=f32
+  [T27] resnetv15_stage1_batchnorm1_running_mean shape=[64] dtype=f32
+  [T28] resnetv15_stage1_batchnorm1_running_var shape=[64] dtype=f32
+  [T29] resnetv15_stage1_batchnorm2_beta shape=[64] dtype=f32
+  [T30] resnetv15_stage1_batchnorm2_fwd shape=[1] dtype=f32
+  [T31] resnetv15_stage1_batchnorm2_gamma shape=[64] dtype=f32
+  [T32] resnetv15_stage1_batchnorm2_running_mean shape=[64] dtype=f32
+  [T33] resnetv15_stage1_batchnorm2_running_var shape=[64] dtype=f32
+  [T34] resnetv15_stage1_batchnorm3_beta shape=[64] dtype=f32
+  [T35] resnetv15_stage1_batchnorm3_fwd shape=[1] dtype=f32
+  [T36] resnetv15_stage1_batchnorm3_gamma shape=[64] dtype=f32
+  [T37] resnetv15_stage1_batchnorm3_running_mean shape=[64] dtype=f32
+  [T38] resnetv15_stage1_batchnorm3_running_var shape=[64] dtype=f32
+  [T39] resnetv15_stage1_conv0_fwd shape=[1] dtype=f32
+  [T40] resnetv15_stage1_conv0_weight shape=[64, 64, 3, 3] dtype=f32
+  [T41] resnetv15_stage1_conv1_fwd shape=[1] dtype=f32
+  [T42] resnetv15_stage1_conv1_weight shape=[64, 64, 3, 3] dtype=f32
+  [T43] resnetv15_stage1_conv2_fwd shape=[1] dtype=f32
+  [T44] resnetv15_stage1_conv2_weight shape=[64, 64, 3, 3] dtype=f32
+  [T45] resnetv15_stage1_conv3_fwd shape=[1] dtype=f32
+  [T46] resnetv15_stage1_conv3_weight shape=[64, 64, 3, 3] dtype=f32
+  [T47] resnetv15_stage1_relu0_fwd shape=[1] dtype=f32
+  [T48] resnetv15_stage1_relu1_fwd shape=[1] dtype=f32
+  [T49] resnetv15_stage2_plus0 shape=[1] dtype=f32
+  [T50] resnetv15_stage2_plus1 shape=[1] dtype=f32
+  [T51] resnetv15_stage2_activation0 shape=[1] dtype=f32
+  [T52] resnetv15_stage2_activation1 shape=[1] dtype=f32
+  [T53] resnetv15_stage2_batchnorm0_beta shape=[128] dtype=f32
+  [T54] resnetv15_stage2_batchnorm0_fwd shape=[1] dtype=f32
+  [T55] resnetv15_stage2_batchnorm0_gamma shape=[128] dtype=f32
+  [T56] resnetv15_stage2_batchnorm0_running_mean shape=[128] dtype=f32
+  [T57] resnetv15_stage2_batchnorm0_running_var shape=[128] dtype=f32
+  [T58] resnetv15_stage2_batchnorm1_beta shape=[128] dtype=f32
+  [T59] resnetv15_stage2_batchnorm1_fwd shape=[1] dtype=f32
+  [T60] resnetv15_stage2_batchnorm1_gamma shape=[128] dtype=f32
+  [T61] resnetv15_stage2_batchnorm1_running_mean shape=[128] dtype=f32
+  [T62] resnetv15_stage2_batchnorm1_running_var shape=[128] dtype=f32
+  [T63] resnetv15_stage2_batchnorm2_beta shape=[128] dtype=f32
+  [T64] resnetv15_stage2_batchnorm2_fwd shape=[1] dtype=f32
+  [T65] resnetv15_stage2_batchnorm2_gamma shape=[128] dtype=f32
+  [T66] resnetv15_stage2_batchnorm2_running_mean shape=[128] dtype=f32
+  [T67] resnetv15_stage2_batchnorm2_running_var shape=[128] dtype=f32
+  [T68] resnetv15_stage2_batchnorm3_beta shape=[128] dtype=f32
+  [T69] resnetv15_stage2_batchnorm3_fwd shape=[1] dtype=f32
+  [T70] resnetv15_stage2_batchnorm3_gamma shape=[128] dtype=f32
+  [T71] resnetv15_stage2_batchnorm3_running_mean shape=[128] dtype=f32
+  [T72] resnetv15_stage2_batchnorm3_running_var shape=[128] dtype=f32
+  [T73] resnetv15_stage2_batchnorm4_beta shape=[128] dtype=f32
+  [T74] resnetv15_stage2_batchnorm4_fwd shape=[1] dtype=f32
+  [T75] resnetv15_stage2_batchnorm4_gamma shape=[128] dtype=f32
+  [T76] resnetv15_stage2_batchnorm4_running_mean shape=[128] dtype=f32
+  [T77] resnetv15_stage2_batchnorm4_running_var shape=[128] dtype=f32
+  [T78] resnetv15_stage2_conv0_fwd shape=[1] dtype=f32
+  [T79] resnetv15_stage2_conv0_weight shape=[128, 64, 3, 3] dtype=f32
+  [T80] resnetv15_stage2_conv1_fwd shape=[1] dtype=f32
+  [T81] resnetv15_stage2_conv1_weight shape=[128, 128, 3, 3] dtype=f32
+  [T82] resnetv15_stage2_conv2_fwd shape=[1] dtype=f32
+  [T83] resnetv15_stage2_conv2_weight shape=[128, 64, 1, 1] dtype=f32
+  [T84] resnetv15_stage2_conv3_fwd shape=[1] dtype=f32
+  [T85] resnetv15_stage2_conv3_weight shape=[128, 128, 3, 3] dtype=f32
+  [T86] resnetv15_stage2_conv4_fwd shape=[1] dtype=f32
+  [T87] resnetv15_stage2_conv4_weight shape=[128, 128, 3, 3] dtype=f32
+  [T88] resnetv15_stage2_relu0_fwd shape=[1] dtype=f32
+  [T89] resnetv15_stage2_relu1_fwd shape=[1] dtype=f32
+  [T90] resnetv15_stage3_plus0 shape=[1] dtype=f32
+  [T91] resnetv15_stage3_plus1 shape=[1] dtype=f32
+  [T92] resnetv15_stage3_activation0 shape=[1] dtype=f32
+  [T93] resnetv15_stage3_activation1 shape=[1] dtype=f32
+  [T94] resnetv15_stage3_batchnorm0_beta shape=[256] dtype=f32
+  [T95] resnetv15_stage3_batchnorm0_fwd shape=[1] dtype=f32
+  [T96] resnetv15_stage3_batchnorm0_gamma shape=[256] dtype=f32
+  [T97] resnetv15_stage3_batchnorm0_running_mean shape=[256] dtype=f32
+  [T98] resnetv15_stage3_batchnorm0_running_var shape=[256] dtype=f32
+  [T99] resnetv15_stage3_batchnorm1_beta shape=[256] dtype=f32
+  [T100] resnetv15_stage3_batchnorm1_fwd shape=[1] dtype=f32
+  [T101] resnetv15_stage3_batchnorm1_gamma shape=[256] dtype=f32
+  [T102] resnetv15_stage3_batchnorm1_running_mean shape=[256] dtype=f32
+  [T103] resnetv15_stage3_batchnorm1_running_var shape=[256] dtype=f32
+  [T104] resnetv15_stage3_batchnorm2_beta shape=[256] dtype=f32
+  [T105] resnetv15_stage3_batchnorm2_fwd shape=[1] dtype=f32
+  [T106] resnetv15_stage3_batchnorm2_gamma shape=[256] dtype=f32
+  [T107] resnetv15_stage3_batchnorm2_running_mean shape=[256] dtype=f32
+  [T108] resnetv15_stage3_batchnorm2_running_var shape=[256] dtype=f32
+  [T109] resnetv15_stage3_batchnorm3_beta shape=[256] dtype=f32
+  [T110] resnetv15_stage3_batchnorm3_fwd shape=[1] dtype=f32
+  [T111] resnetv15_stage3_batchnorm3_gamma shape=[256] dtype=f32
+  [T112] resnetv15_stage3_batchnorm3_running_mean shape=[256] dtype=f32
+  [T113] resnetv15_stage3_batchnorm3_running_var shape=[256] dtype=f32
+  [T114] resnetv15_stage3_batchnorm4_beta shape=[256] dtype=f32
+  [T115] resnetv15_stage3_batchnorm4_fwd shape=[1] dtype=f32
+  [T116] resnetv15_stage3_batchnorm4_gamma shape=[256] dtype=f32
+  [T117] resnetv15_stage3_batchnorm4_running_mean shape=[256] dtype=f32
+  [T118] resnetv15_stage3_batchnorm4_running_var shape=[256] dtype=f32
+  [T119] resnetv15_stage3_conv0_fwd shape=[1] dtype=f32
+  [T120] resnetv15_stage3_conv0_weight shape=[256, 128, 3, 3] dtype=f32
+  [T121] resnetv15_stage3_conv1_fwd shape=[1] dtype=f32
+  [T122] resnetv15_stage3_conv1_weight shape=[256, 256, 3, 3] dtype=f32
+  [T123] resnetv15_stage3_conv2_fwd shape=[1] dtype=f32
+  [T124] resnetv15_stage3_conv2_weight shape=[256, 128, 1, 1] dtype=f32
+  [T125] resnetv15_stage3_conv3_fwd shape=[1] dtype=f32
+  [T126] resnetv15_stage3_conv3_weight shape=[256, 256, 3, 3] dtype=f32
+  [T127] resnetv15_stage3_conv4_fwd shape=[1] dtype=f32
+  [T128] resnetv15_stage3_conv4_weight shape=[256, 256, 3, 3] dtype=f32
+  [T129] resnetv15_stage3_relu0_fwd shape=[1] dtype=f32
+  [T130] resnetv15_stage3_relu1_fwd shape=[1] dtype=f32
+  [T131] resnetv15_stage4_plus0 shape=[1] dtype=f32
+  [T132] resnetv15_stage4_plus1 shape=[1] dtype=f32
+  [T133] resnetv15_stage4_activation0 shape=[1] dtype=f32
+  [T134] resnetv15_stage4_activation1 shape=[1] dtype=f32
+  [T135] resnetv15_stage4_batchnorm0_beta shape=[512] dtype=f32
+  [T136] resnetv15_stage4_batchnorm0_fwd shape=[1] dtype=f32
+  [T137] resnetv15_stage4_batchnorm0_gamma shape=[512] dtype=f32
+  [T138] resnetv15_stage4_batchnorm0_running_mean shape=[512] dtype=f32
+  [T139] resnetv15_stage4_batchnorm0_running_var shape=[512] dtype=f32
+  [T140] resnetv15_stage4_batchnorm1_beta shape=[512] dtype=f32
+  [T141] resnetv15_stage4_batchnorm1_fwd shape=[1] dtype=f32
+  [T142] resnetv15_stage4_batchnorm1_gamma shape=[512] dtype=f32
+  [T143] resnetv15_stage4_batchnorm1_running_mean shape=[512] dtype=f32
+  [T144] resnetv15_stage4_batchnorm1_running_var shape=[512] dtype=f32
+  [T145] resnetv15_stage4_batchnorm2_beta shape=[512] dtype=f32
+  [T146] resnetv15_stage4_batchnorm2_fwd shape=[1] dtype=f32
+  [T147] resnetv15_stage4_batchnorm2_gamma shape=[512] dtype=f32
+  [T148] resnetv15_stage4_batchnorm2_running_mean shape=[512] dtype=f32
+  [T149] resnetv15_stage4_batchnorm2_running_var shape=[512] dtype=f32
+  [T150] resnetv15_stage4_batchnorm3_beta shape=[512] dtype=f32
+  [T151] resnetv15_stage4_batchnorm3_fwd shape=[1] dtype=f32
+  [T152] resnetv15_stage4_batchnorm3_gamma shape=[512] dtype=f32
+  [T153] resnetv15_stage4_batchnorm3_running_mean shape=[512] dtype=f32
+  [T154] resnetv15_stage4_batchnorm3_running_var shape=[512] dtype=f32
+  [T155] resnetv15_stage4_batchnorm4_beta shape=[512] dtype=f32
+  [T156] resnetv15_stage4_batchnorm4_fwd shape=[1] dtype=f32
+  [T157] resnetv15_stage4_batchnorm4_gamma shape=[512] dtype=f32
+  [T158] resnetv15_stage4_batchnorm4_running_mean shape=[512] dtype=f32
+  [T159] resnetv15_stage4_batchnorm4_running_var shape=[512] dtype=f32
+  [T160] resnetv15_stage4_conv0_fwd shape=[1] dtype=f32
+  [T161] resnetv15_stage4_conv0_weight shape=[512, 256, 3, 3] dtype=f32
+  [T162] resnetv15_stage4_conv1_fwd shape=[1] dtype=f32
+  [T163] resnetv15_stage4_conv1_weight shape=[512, 512, 3, 3] dtype=f32
+  [T164] resnetv15_stage4_conv2_fwd shape=[1] dtype=f32
+  [T165] resnetv15_stage4_conv2_weight shape=[512, 256, 1, 1] dtype=f32
+  [T166] resnetv15_stage4_conv3_fwd shape=[1] dtype=f32
+  [T167] resnetv15_stage4_conv3_weight shape=[512, 512, 3, 3] dtype=f32
+  [T168] resnetv15_stage4_conv4_fwd shape=[1] dtype=f32
+  [T169] resnetv15_stage4_conv4_weight shape=[512, 512, 3, 3] dtype=f32
+  [T170] resnetv15_stage4_relu0_fwd shape=[1] dtype=f32
+  [T171] resnetv15_stage4_relu1_fwd shape=[1] dtype=f32
 算子列表：
-  [O0] input kind=Input inputs= outputs= T0
-  [O1] embedding kind=Embedding inputs= T0 outputs= T1
-  [O2] transformer_block_0.rmsnorm0 kind=RmsNorm inputs= T1 outputs= T2
-  [O3] transformer_block_0.qkv kind=QkvProject inputs= T1 outputs= T2
-  [O4] transformer_block_0.rope kind=Rope inputs= T1 outputs= T2
-  [O5] transformer_block_0.attention kind=Attention inputs= T1 outputs= T2
-  [O6] transformer_block_0.residual0 kind=ResidualAdd inputs= T1 outputs= T2
-  [O7] transformer_block_0.rmsnorm1 kind=RmsNorm inputs= T1 outputs= T2
-  [O8] transformer_block_0.swiglu kind=SwiGLU inputs= T1 outputs= T2
-  [O9] transformer_block_0.residual1 kind=ResidualAdd inputs= T1 outputs= T2
-  [O10] lm_head kind=LmHead inputs= T2 outputs= T3
-  [O11] output kind=Output inputs= T3 outputs=
+  [O0] input_data kind=Input inputs= outputs= T0
+  [O1] resnetv15_conv0_fwd kind=Unknown inputs= T0 T8 outputs= T7
+  [O2] resnetv15_batchnorm0_fwd kind=Unknown inputs= T7 T4 T2 T5 T6 outputs= T3
+  [O3] resnetv15_relu0_fwd kind=Unknown inputs= T3 outputs= T14
+  [O4] resnetv15_pool0_fwd kind=Unknown inputs= T14 outputs= T12
+  [O5] resnetv15_stage1_conv0_fwd kind=Unknown inputs= T12 T40 outputs= T39
+  [O6] resnetv15_stage1_batchnorm0_fwd kind=Unknown inputs= T39 T21 T19 T22 T23 outputs= T20
+  [O7] resnetv15_stage1_relu0_fwd kind=Unknown inputs= T20 outputs= T47
+  [O8] resnetv15_stage1_conv1_fwd kind=Unknown inputs= T47 T42 outputs= T41
+  [O9] resnetv15_stage1_batchnorm1_fwd kind=Unknown inputs= T41 T26 T24 T27 T28 outputs= T25
+  [O10] resnetv15_stage1_plus0 kind=Unknown inputs= T12 T25 outputs= T15
+  [O11] resnetv15_stage1_activation0 kind=Unknown inputs= T15 outputs= T17
+  [O12] resnetv15_stage1_conv2_fwd kind=Unknown inputs= T17 T44 outputs= T43
+  [O13] resnetv15_stage1_batchnorm2_fwd kind=Unknown inputs= T43 T31 T29 T32 T33 outputs= T30
+  [O14] resnetv15_stage1_relu1_fwd kind=Unknown inputs= T30 outputs= T48
+  [O15] resnetv15_stage1_conv3_fwd kind=Unknown inputs= T48 T46 outputs= T45
+  [O16] resnetv15_stage1_batchnorm3_fwd kind=Unknown inputs= T45 T36 T34 T37 T38 outputs= T35
+  [O17] resnetv15_stage1_plus1 kind=Unknown inputs= T17 T35 outputs= T16
+  [O18] resnetv15_stage1_activation1 kind=Unknown inputs= T16 outputs= T18
+  [O19] resnetv15_stage2_conv2_fwd kind=Unknown inputs= T18 T83 outputs= T82
+  [O20] resnetv15_stage2_batchnorm2_fwd kind=Unknown inputs= T82 T65 T63 T66 T67 outputs= T64
+  [O21] resnetv15_stage2_conv0_fwd kind=Unknown inputs= T18 T79 outputs= T78
+  [O22] resnetv15_stage2_batchnorm0_fwd kind=Unknown inputs= T78 T55 T53 T56 T57 outputs= T54
+  [O23] resnetv15_stage2_relu0_fwd kind=Unknown inputs= T54 outputs= T88
+  [O24] resnetv15_stage2_conv1_fwd kind=Unknown inputs= T88 T81 outputs= T80
+  [O25] resnetv15_stage2_batchnorm1_fwd kind=Unknown inputs= T80 T60 T58 T61 T62 outputs= T59
+  [O26] resnetv15_stage2_plus0 kind=Unknown inputs= T64 T59 outputs= T49
+  [O27] resnetv15_stage2_activation0 kind=Unknown inputs= T49 outputs= T51
+  [O28] resnetv15_stage2_conv3_fwd kind=Unknown inputs= T51 T85 outputs= T84
+  [O29] resnetv15_stage2_batchnorm3_fwd kind=Unknown inputs= T84 T70 T68 T71 T72 outputs= T69
+  [O30] resnetv15_stage2_relu1_fwd kind=Unknown inputs= T69 outputs= T89
+  [O31] resnetv15_stage2_conv4_fwd kind=Unknown inputs= T89 T87 outputs= T86
+  [O32] resnetv15_stage2_batchnorm4_fwd kind=Unknown inputs= T86 T75 T73 T76 T77 outputs= T74
+  [O33] resnetv15_stage2_plus1 kind=Unknown inputs= T51 T74 outputs= T50
+  [O34] resnetv15_stage2_activation1 kind=Unknown inputs= T50 outputs= T52
+  [O35] resnetv15_stage3_conv2_fwd kind=Unknown inputs= T52 T124 outputs= T123
+  [O36] resnetv15_stage3_batchnorm2_fwd kind=Unknown inputs= T123 T106 T104 T107 T108 outputs= T105
+  [O37] resnetv15_stage3_conv0_fwd kind=Unknown inputs= T52 T120 outputs= T119
+  [O38] resnetv15_stage3_batchnorm0_fwd kind=Unknown inputs= T119 T96 T94 T97 T98 outputs= T95
+  [O39] resnetv15_stage3_relu0_fwd kind=Unknown inputs= T95 outputs= T129
+  [O40] resnetv15_stage3_conv1_fwd kind=Unknown inputs= T129 T122 outputs= T121
+  [O41] resnetv15_stage3_batchnorm1_fwd kind=Unknown inputs= T121 T101 T99 T102 T103 outputs= T100
+  [O42] resnetv15_stage3_plus0 kind=Unknown inputs= T105 T100 outputs= T90
+  [O43] resnetv15_stage3_activation0 kind=Unknown inputs= T90 outputs= T92
+  [O44] resnetv15_stage3_conv3_fwd kind=Unknown inputs= T92 T126 outputs= T125
+  [O45] resnetv15_stage3_batchnorm3_fwd kind=Unknown inputs= T125 T111 T109 T112 T113 outputs= T110
+  [O46] resnetv15_stage3_relu1_fwd kind=Unknown inputs= T110 outputs= T130
+  [O47] resnetv15_stage3_conv4_fwd kind=Unknown inputs= T130 T128 outputs= T127
+  [O48] resnetv15_stage3_batchnorm4_fwd kind=Unknown inputs= T127 T116 T114 T117 T118 outputs= T115
+  [O49] resnetv15_stage3_plus1 kind=Unknown inputs= T92 T115 outputs= T91
+  [O50] resnetv15_stage3_activation1 kind=Unknown inputs= T91 outputs= T93
+  [O51] resnetv15_stage4_conv2_fwd kind=Unknown inputs= T93 T165 outputs= T164
+  [O52] resnetv15_stage4_batchnorm2_fwd kind=Unknown inputs= T164 T147 T145 T148 T149 outputs= T146
+  [O53] resnetv15_stage4_conv0_fwd kind=Unknown inputs= T93 T161 outputs= T160
+  [O54] resnetv15_stage4_batchnorm0_fwd kind=Unknown inputs= T160 T137 T135 T138 T139 outputs= T136
+  [O55] resnetv15_stage4_relu0_fwd kind=Unknown inputs= T136 outputs= T170
+  [O56] resnetv15_stage4_conv1_fwd kind=Unknown inputs= T170 T163 outputs= T162
+  [O57] resnetv15_stage4_batchnorm1_fwd kind=Unknown inputs= T162 T142 T140 T143 T144 outputs= T141
+  [O58] resnetv15_stage4_plus0 kind=Unknown inputs= T146 T141 outputs= T131
+  [O59] resnetv15_stage4_activation0 kind=Unknown inputs= T131 outputs= T133
+  [O60] resnetv15_stage4_conv3_fwd kind=Unknown inputs= T133 T167 outputs= T166
+  [O61] resnetv15_stage4_batchnorm3_fwd kind=Unknown inputs= T166 T152 T150 T153 T154 outputs= T151
+  [O62] resnetv15_stage4_relu1_fwd kind=Unknown inputs= T151 outputs= T171
+  [O63] resnetv15_stage4_conv4_fwd kind=Unknown inputs= T171 T169 outputs= T168
+  [O64] resnetv15_stage4_batchnorm4_fwd kind=Unknown inputs= T168 T157 T155 T158 T159 outputs= T156
+  [O65] resnetv15_stage4_plus1 kind=Unknown inputs= T133 T156 outputs= T132
+  [O66] resnetv15_stage4_activation1 kind=Unknown inputs= T132 outputs= T134
+  [O67] resnetv15_pool1_fwd kind=Unknown inputs= T134 outputs= T13
+  [O68] flatten_170 kind=Unknown inputs= T13 outputs= T1
+  [O69] resnetv15_dense0_fwd kind=Unknown inputs= T1 T11 T9 outputs= T10
+  [O70] output_resnetv15_dense0_fwd kind=Output inputs= T10 outputs=
 
 ==== 静态内存规划 ====
-total_bytes=4235328 peak_bytes=4235328
-  input_ids offset=0 size=64
-  hidden_states offset=64 size=65536
-  block_output offset=65600 size=65536
-  logits offset=131136 size=4104192
+total_bytes=47402832 peak_bytes=47402832
+  data offset=0 size=602112
+  flatten_170 offset=602112 size=4
+  resnetv15_batchnorm0_beta offset=602116 size=256
+  resnetv15_batchnorm0_fwd offset=602372 size=4
+  resnetv15_batchnorm0_gamma offset=602376 size=256
+  resnetv15_batchnorm0_running_mean offset=602632 size=256
+  resnetv15_batchnorm0_running_var offset=602888 size=256
+  resnetv15_conv0_fwd offset=603144 size=4
+  resnetv15_conv0_weight offset=603148 size=37632
+  resnetv15_dense0_bias offset=640780 size=4000
+  resnetv15_dense0_fwd offset=644780 size=4000
+  resnetv15_dense0_weight offset=648780 size=2048000
+  resnetv15_pool0_fwd offset=2696780 size=4
+  resnetv15_pool1_fwd offset=2696784 size=4
+  resnetv15_relu0_fwd offset=2696788 size=4
+  resnetv15_stage1_plus0 offset=2696792 size=4
+  resnetv15_stage1_plus1 offset=2696796 size=4
+  resnetv15_stage1_activation0 offset=2696800 size=4
+  resnetv15_stage1_activation1 offset=2696804 size=4
+  resnetv15_stage1_batchnorm0_beta offset=2696808 size=256
+  resnetv15_stage1_batchnorm0_fwd offset=2697064 size=4
+  resnetv15_stage1_batchnorm0_gamma offset=2697068 size=256
+  resnetv15_stage1_batchnorm0_running_mean offset=2697324 size=256
+  resnetv15_stage1_batchnorm0_running_var offset=2697580 size=256
+  resnetv15_stage1_batchnorm1_beta offset=2697836 size=256
+  resnetv15_stage1_batchnorm1_fwd offset=2698092 size=4
+  resnetv15_stage1_batchnorm1_gamma offset=2698096 size=256
+  resnetv15_stage1_batchnorm1_running_mean offset=2698352 size=256
+  resnetv15_stage1_batchnorm1_running_var offset=2698608 size=256
+  resnetv15_stage1_batchnorm2_beta offset=2698864 size=256
+  resnetv15_stage1_batchnorm2_fwd offset=2699120 size=4
+  resnetv15_stage1_batchnorm2_gamma offset=2699124 size=256
+  resnetv15_stage1_batchnorm2_running_mean offset=2699380 size=256
+  resnetv15_stage1_batchnorm2_running_var offset=2699636 size=256
+  resnetv15_stage1_batchnorm3_beta offset=2699892 size=256
+  resnetv15_stage1_batchnorm3_fwd offset=2700148 size=4
+  resnetv15_stage1_batchnorm3_gamma offset=2700152 size=256
+  resnetv15_stage1_batchnorm3_running_mean offset=2700408 size=256
+  resnetv15_stage1_batchnorm3_running_var offset=2700664 size=256
+  resnetv15_stage1_conv0_fwd offset=2700920 size=4
+  resnetv15_stage1_conv0_weight offset=2700924 size=147456
+  resnetv15_stage1_conv1_fwd offset=2848380 size=4
+  resnetv15_stage1_conv1_weight offset=2848384 size=147456
+  resnetv15_stage1_conv2_fwd offset=2995840 size=4
+  resnetv15_stage1_conv2_weight offset=2995844 size=147456
+  resnetv15_stage1_conv3_fwd offset=3143300 size=4
+  resnetv15_stage1_conv3_weight offset=3143304 size=147456
+  resnetv15_stage1_relu0_fwd offset=3290760 size=4
+  resnetv15_stage1_relu1_fwd offset=3290764 size=4
+  resnetv15_stage2_plus0 offset=3290768 size=4
+  resnetv15_stage2_plus1 offset=3290772 size=4
+  resnetv15_stage2_activation0 offset=3290776 size=4
+  resnetv15_stage2_activation1 offset=3290780 size=4
+  resnetv15_stage2_batchnorm0_beta offset=3290784 size=512
+  resnetv15_stage2_batchnorm0_fwd offset=3291296 size=4
+  resnetv15_stage2_batchnorm0_gamma offset=3291300 size=512
+  resnetv15_stage2_batchnorm0_running_mean offset=3291812 size=512
+  resnetv15_stage2_batchnorm0_running_var offset=3292324 size=512
+  resnetv15_stage2_batchnorm1_beta offset=3292836 size=512
+  resnetv15_stage2_batchnorm1_fwd offset=3293348 size=4
+  resnetv15_stage2_batchnorm1_gamma offset=3293352 size=512
+  resnetv15_stage2_batchnorm1_running_mean offset=3293864 size=512
+  resnetv15_stage2_batchnorm1_running_var offset=3294376 size=512
+  resnetv15_stage2_batchnorm2_beta offset=3294888 size=512
+  resnetv15_stage2_batchnorm2_fwd offset=3295400 size=4
+  resnetv15_stage2_batchnorm2_gamma offset=3295404 size=512
+  resnetv15_stage2_batchnorm2_running_mean offset=3295916 size=512
+  resnetv15_stage2_batchnorm2_running_var offset=3296428 size=512
+  resnetv15_stage2_batchnorm3_beta offset=3296940 size=512
+  resnetv15_stage2_batchnorm3_fwd offset=3297452 size=4
+  resnetv15_stage2_batchnorm3_gamma offset=3297456 size=512
+  resnetv15_stage2_batchnorm3_running_mean offset=3297968 size=512
+  resnetv15_stage2_batchnorm3_running_var offset=3298480 size=512
+  resnetv15_stage2_batchnorm4_beta offset=3298992 size=512
+  resnetv15_stage2_batchnorm4_fwd offset=3299504 size=4
+  resnetv15_stage2_batchnorm4_gamma offset=3299508 size=512
+  resnetv15_stage2_batchnorm4_running_mean offset=3300020 size=512
+  resnetv15_stage2_batchnorm4_running_var offset=3300532 size=512
+  resnetv15_stage2_conv0_fwd offset=3301044 size=4
+  resnetv15_stage2_conv0_weight offset=3301048 size=294912
+  resnetv15_stage2_conv1_fwd offset=3595960 size=4
+  resnetv15_stage2_conv1_weight offset=3595964 size=589824
+  resnetv15_stage2_conv2_fwd offset=4185788 size=4
+  resnetv15_stage2_conv2_weight offset=4185792 size=32768
+  resnetv15_stage2_conv3_fwd offset=4218560 size=4
+  resnetv15_stage2_conv3_weight offset=4218564 size=589824
+  resnetv15_stage2_conv4_fwd offset=4808388 size=4
+  resnetv15_stage2_conv4_weight offset=4808392 size=589824
+  resnetv15_stage2_relu0_fwd offset=5398216 size=4
+  resnetv15_stage2_relu1_fwd offset=5398220 size=4
+  resnetv15_stage3_plus0 offset=5398224 size=4
+  resnetv15_stage3_plus1 offset=5398228 size=4
+  resnetv15_stage3_activation0 offset=5398232 size=4
+  resnetv15_stage3_activation1 offset=5398236 size=4
+  resnetv15_stage3_batchnorm0_beta offset=5398240 size=1024
+  resnetv15_stage3_batchnorm0_fwd offset=5399264 size=4
+  resnetv15_stage3_batchnorm0_gamma offset=5399268 size=1024
+  resnetv15_stage3_batchnorm0_running_mean offset=5400292 size=1024
+  resnetv15_stage3_batchnorm0_running_var offset=5401316 size=1024
+  resnetv15_stage3_batchnorm1_beta offset=5402340 size=1024
+  resnetv15_stage3_batchnorm1_fwd offset=5403364 size=4
+  resnetv15_stage3_batchnorm1_gamma offset=5403368 size=1024
+  resnetv15_stage3_batchnorm1_running_mean offset=5404392 size=1024
+  resnetv15_stage3_batchnorm1_running_var offset=5405416 size=1024
+  resnetv15_stage3_batchnorm2_beta offset=5406440 size=1024
+  resnetv15_stage3_batchnorm2_fwd offset=5407464 size=4
+  resnetv15_stage3_batchnorm2_gamma offset=5407468 size=1024
+  resnetv15_stage3_batchnorm2_running_mean offset=5408492 size=1024
+  resnetv15_stage3_batchnorm2_running_var offset=5409516 size=1024
+  resnetv15_stage3_batchnorm3_beta offset=5410540 size=1024
+  resnetv15_stage3_batchnorm3_fwd offset=5411564 size=4
+  resnetv15_stage3_batchnorm3_gamma offset=5411568 size=1024
+  resnetv15_stage3_batchnorm3_running_mean offset=5412592 size=1024
+  resnetv15_stage3_batchnorm3_running_var offset=5413616 size=1024
+  resnetv15_stage3_batchnorm4_beta offset=5414640 size=1024
+  resnetv15_stage3_batchnorm4_fwd offset=5415664 size=4
+  resnetv15_stage3_batchnorm4_gamma offset=5415668 size=1024
+  resnetv15_stage3_batchnorm4_running_mean offset=5416692 size=1024
+  resnetv15_stage3_batchnorm4_running_var offset=5417716 size=1024
+  resnetv15_stage3_conv0_fwd offset=5418740 size=4
+  resnetv15_stage3_conv0_weight offset=5418744 size=1179648
+  resnetv15_stage3_conv1_fwd offset=6598392 size=4
+  resnetv15_stage3_conv1_weight offset=6598396 size=2359296
+  resnetv15_stage3_conv2_fwd offset=8957692 size=4
+  resnetv15_stage3_conv2_weight offset=8957696 size=131072
+  resnetv15_stage3_conv3_fwd offset=9088768 size=4
+  resnetv15_stage3_conv3_weight offset=9088772 size=2359296
+  resnetv15_stage3_conv4_fwd offset=11448068 size=4
+  resnetv15_stage3_conv4_weight offset=11448072 size=2359296
+  resnetv15_stage3_relu0_fwd offset=13807368 size=4
+  resnetv15_stage3_relu1_fwd offset=13807372 size=4
+  resnetv15_stage4_plus0 offset=13807376 size=4
+  resnetv15_stage4_plus1 offset=13807380 size=4
+  resnetv15_stage4_activation0 offset=13807384 size=4
+  resnetv15_stage4_activation1 offset=13807388 size=4
+  resnetv15_stage4_batchnorm0_beta offset=13807392 size=2048
+  resnetv15_stage4_batchnorm0_fwd offset=13809440 size=4
+  resnetv15_stage4_batchnorm0_gamma offset=13809444 size=2048
+  resnetv15_stage4_batchnorm0_running_mean offset=13811492 size=2048
+  resnetv15_stage4_batchnorm0_running_var offset=13813540 size=2048
+  resnetv15_stage4_batchnorm1_beta offset=13815588 size=2048
+  resnetv15_stage4_batchnorm1_fwd offset=13817636 size=4
+  resnetv15_stage4_batchnorm1_gamma offset=13817640 size=2048
+  resnetv15_stage4_batchnorm1_running_mean offset=13819688 size=2048
+  resnetv15_stage4_batchnorm1_running_var offset=13821736 size=2048
+  resnetv15_stage4_batchnorm2_beta offset=13823784 size=2048
+  resnetv15_stage4_batchnorm2_fwd offset=13825832 size=4
+  resnetv15_stage4_batchnorm2_gamma offset=13825836 size=2048
+  resnetv15_stage4_batchnorm2_running_mean offset=13827884 size=2048
+  resnetv15_stage4_batchnorm2_running_var offset=13829932 size=2048
+  resnetv15_stage4_batchnorm3_beta offset=13831980 size=2048
+  resnetv15_stage4_batchnorm3_fwd offset=13834028 size=4
+  resnetv15_stage4_batchnorm3_gamma offset=13834032 size=2048
+  resnetv15_stage4_batchnorm3_running_mean offset=13836080 size=2048
+  resnetv15_stage4_batchnorm3_running_var offset=13838128 size=2048
+  resnetv15_stage4_batchnorm4_beta offset=13840176 size=2048
+  resnetv15_stage4_batchnorm4_fwd offset=13842224 size=4
+  resnetv15_stage4_batchnorm4_gamma offset=13842228 size=2048
+  resnetv15_stage4_batchnorm4_running_mean offset=13844276 size=2048
+  resnetv15_stage4_batchnorm4_running_var offset=13846324 size=2048
+  resnetv15_stage4_conv0_fwd offset=13848372 size=4
+  resnetv15_stage4_conv0_weight offset=13848376 size=4718592
+  resnetv15_stage4_conv1_fwd offset=18566968 size=4
+  resnetv15_stage4_conv1_weight offset=18566972 size=9437184
+  resnetv15_stage4_conv2_fwd offset=28004156 size=4
+  resnetv15_stage4_conv2_weight offset=28004160 size=524288
+  resnetv15_stage4_conv3_fwd offset=28528448 size=4
+  resnetv15_stage4_conv3_weight offset=28528452 size=9437184
+  resnetv15_stage4_conv4_fwd offset=37965636 size=4
+  resnetv15_stage4_conv4_weight offset=37965640 size=9437184
+  resnetv15_stage4_relu0_fwd offset=47402824 size=4
+  resnetv15_stage4_relu1_fwd offset=47402828 size=4
 
 ==== Toy Backend 命令流 ====
-ALLOC input_ids 0 64
-ALLOC hidden_states 64 65536
-ALLOC block_output 65600 65536
-ALLOC logits 131136 4104192
-EXEC input Input
-EXEC embedding Embedding
-EXEC transformer_block_0.rmsnorm0 RmsNorm
-EXEC transformer_block_0.qkv QkvProject
-EXEC transformer_block_0.rope Rope
-EXEC transformer_block_0.attention Attention
-EXEC transformer_block_0.residual0 ResidualAdd
-EXEC transformer_block_0.rmsnorm1 RmsNorm
-EXEC transformer_block_0.swiglu SwiGLU
-EXEC transformer_block_0.residual1 ResidualAdd
-EXEC lm_head LmHead
-EXEC output Output
+ALLOC data 0 602112
+ALLOC flatten_170 602112 4
+ALLOC resnetv15_batchnorm0_beta 602116 256
+ALLOC resnetv15_batchnorm0_fwd 602372 4
+ALLOC resnetv15_batchnorm0_gamma 602376 256
+ALLOC resnetv15_batchnorm0_running_mean 602632 256
+ALLOC resnetv15_batchnorm0_running_var 602888 256
+ALLOC resnetv15_conv0_fwd 603144 4
+ALLOC resnetv15_conv0_weight 603148 37632
+ALLOC resnetv15_dense0_bias 640780 4000
+ALLOC resnetv15_dense0_fwd 644780 4000
+ALLOC resnetv15_dense0_weight 648780 2048000
+ALLOC resnetv15_pool0_fwd 2696780 4
+ALLOC resnetv15_pool1_fwd 2696784 4
+ALLOC resnetv15_relu0_fwd 2696788 4
+ALLOC resnetv15_stage1_plus0 2696792 4
+ALLOC resnetv15_stage1_plus1 2696796 4
+ALLOC resnetv15_stage1_activation0 2696800 4
+ALLOC resnetv15_stage1_activation1 2696804 4
+ALLOC resnetv15_stage1_batchnorm0_beta 2696808 256
+ALLOC resnetv15_stage1_batchnorm0_fwd 2697064 4
+ALLOC resnetv15_stage1_batchnorm0_gamma 2697068 256
+ALLOC resnetv15_stage1_batchnorm0_running_mean 2697324 256
+ALLOC resnetv15_stage1_batchnorm0_running_var 2697580 256
+ALLOC resnetv15_stage1_batchnorm1_beta 2697836 256
+ALLOC resnetv15_stage1_batchnorm1_fwd 2698092 4
+ALLOC resnetv15_stage1_batchnorm1_gamma 2698096 256
+ALLOC resnetv15_stage1_batchnorm1_running_mean 2698352 256
+ALLOC resnetv15_stage1_batchnorm1_running_var 2698608 256
+ALLOC resnetv15_stage1_batchnorm2_beta 2698864 256
+ALLOC resnetv15_stage1_batchnorm2_fwd 2699120 4
+ALLOC resnetv15_stage1_batchnorm2_gamma 2699124 256
+ALLOC resnetv15_stage1_batchnorm2_running_mean 2699380 256
+ALLOC resnetv15_stage1_batchnorm2_running_var 2699636 256
+ALLOC resnetv15_stage1_batchnorm3_beta 2699892 256
+ALLOC resnetv15_stage1_batchnorm3_fwd 2700148 4
+ALLOC resnetv15_stage1_batchnorm3_gamma 2700152 256
+ALLOC resnetv15_stage1_batchnorm3_running_mean 2700408 256
+ALLOC resnetv15_stage1_batchnorm3_running_var 2700664 256
+ALLOC resnetv15_stage1_conv0_fwd 2700920 4
+ALLOC resnetv15_stage1_conv0_weight 2700924 147456
+ALLOC resnetv15_stage1_conv1_fwd 2848380 4
+ALLOC resnetv15_stage1_conv1_weight 2848384 147456
+ALLOC resnetv15_stage1_conv2_fwd 2995840 4
+ALLOC resnetv15_stage1_conv2_weight 2995844 147456
+ALLOC resnetv15_stage1_conv3_fwd 3143300 4
+ALLOC resnetv15_stage1_conv3_weight 3143304 147456
+ALLOC resnetv15_stage1_relu0_fwd 3290760 4
+ALLOC resnetv15_stage1_relu1_fwd 3290764 4
+ALLOC resnetv15_stage2_plus0 3290768 4
+ALLOC resnetv15_stage2_plus1 3290772 4
+ALLOC resnetv15_stage2_activation0 3290776 4
+ALLOC resnetv15_stage2_activation1 3290780 4
+ALLOC resnetv15_stage2_batchnorm0_beta 3290784 512
+ALLOC resnetv15_stage2_batchnorm0_fwd 3291296 4
+ALLOC resnetv15_stage2_batchnorm0_gamma 3291300 512
+ALLOC resnetv15_stage2_batchnorm0_running_mean 3291812 512
+ALLOC resnetv15_stage2_batchnorm0_running_var 3292324 512
+ALLOC resnetv15_stage2_batchnorm1_beta 3292836 512
+ALLOC resnetv15_stage2_batchnorm1_fwd 3293348 4
+ALLOC resnetv15_stage2_batchnorm1_gamma 3293352 512
+ALLOC resnetv15_stage2_batchnorm1_running_mean 3293864 512
+ALLOC resnetv15_stage2_batchnorm1_running_var 3294376 512
+ALLOC resnetv15_stage2_batchnorm2_beta 3294888 512
+ALLOC resnetv15_stage2_batchnorm2_fwd 3295400 4
+ALLOC resnetv15_stage2_batchnorm2_gamma 3295404 512
+ALLOC resnetv15_stage2_batchnorm2_running_mean 3295916 512
+ALLOC resnetv15_stage2_batchnorm2_running_var 3296428 512
+ALLOC resnetv15_stage2_batchnorm3_beta 3296940 512
+ALLOC resnetv15_stage2_batchnorm3_fwd 3297452 4
+ALLOC resnetv15_stage2_batchnorm3_gamma 3297456 512
+ALLOC resnetv15_stage2_batchnorm3_running_mean 3297968 512
+ALLOC resnetv15_stage2_batchnorm3_running_var 3298480 512
+ALLOC resnetv15_stage2_batchnorm4_beta 3298992 512
+ALLOC resnetv15_stage2_batchnorm4_fwd 3299504 4
+ALLOC resnetv15_stage2_batchnorm4_gamma 3299508 512
+ALLOC resnetv15_stage2_batchnorm4_running_mean 3300020 512
+ALLOC resnetv15_stage2_batchnorm4_running_var 3300532 512
+ALLOC resnetv15_stage2_conv0_fwd 3301044 4
+ALLOC resnetv15_stage2_conv0_weight 3301048 294912
+ALLOC resnetv15_stage2_conv1_fwd 3595960 4
+ALLOC resnetv15_stage2_conv1_weight 3595964 589824
+ALLOC resnetv15_stage2_conv2_fwd 4185788 4
+ALLOC resnetv15_stage2_conv2_weight 4185792 32768
+ALLOC resnetv15_stage2_conv3_fwd 4218560 4
+ALLOC resnetv15_stage2_conv3_weight 4218564 589824
+ALLOC resnetv15_stage2_conv4_fwd 4808388 4
+ALLOC resnetv15_stage2_conv4_weight 4808392 589824
+ALLOC resnetv15_stage2_relu0_fwd 5398216 4
+ALLOC resnetv15_stage2_relu1_fwd 5398220 4
+ALLOC resnetv15_stage3_plus0 5398224 4
+ALLOC resnetv15_stage3_plus1 5398228 4
+ALLOC resnetv15_stage3_activation0 5398232 4
+ALLOC resnetv15_stage3_activation1 5398236 4
+ALLOC resnetv15_stage3_batchnorm0_beta 5398240 1024
+ALLOC resnetv15_stage3_batchnorm0_fwd 5399264 4
+ALLOC resnetv15_stage3_batchnorm0_gamma 5399268 1024
+ALLOC resnetv15_stage3_batchnorm0_running_mean 5400292 1024
+ALLOC resnetv15_stage3_batchnorm0_running_var 5401316 1024
+ALLOC resnetv15_stage3_batchnorm1_beta 5402340 1024
+ALLOC resnetv15_stage3_batchnorm1_fwd 5403364 4
+ALLOC resnetv15_stage3_batchnorm1_gamma 5403368 1024
+ALLOC resnetv15_stage3_batchnorm1_running_mean 5404392 1024
+ALLOC resnetv15_stage3_batchnorm1_running_var 5405416 1024
+ALLOC resnetv15_stage3_batchnorm2_beta 5406440 1024
+ALLOC resnetv15_stage3_batchnorm2_fwd 5407464 4
+ALLOC resnetv15_stage3_batchnorm2_gamma 5407468 1024
+ALLOC resnetv15_stage3_batchnorm2_running_mean 5408492 1024
+ALLOC resnetv15_stage3_batchnorm2_running_var 5409516 1024
+ALLOC resnetv15_stage3_batchnorm3_beta 5410540 1024
+ALLOC resnetv15_stage3_batchnorm3_fwd 5411564 4
+ALLOC resnetv15_stage3_batchnorm3_gamma 5411568 1024
+ALLOC resnetv15_stage3_batchnorm3_running_mean 5412592 1024
+ALLOC resnetv15_stage3_batchnorm3_running_var 5413616 1024
+ALLOC resnetv15_stage3_batchnorm4_beta 5414640 1024
+ALLOC resnetv15_stage3_batchnorm4_fwd 5415664 4
+ALLOC resnetv15_stage3_batchnorm4_gamma 5415668 1024
+ALLOC resnetv15_stage3_batchnorm4_running_mean 5416692 1024
+ALLOC resnetv15_stage3_batchnorm4_running_var 5417716 1024
+ALLOC resnetv15_stage3_conv0_fwd 5418740 4
+ALLOC resnetv15_stage3_conv0_weight 5418744 1179648
+ALLOC resnetv15_stage3_conv1_fwd 6598392 4
+ALLOC resnetv15_stage3_conv1_weight 6598396 2359296
+ALLOC resnetv15_stage3_conv2_fwd 8957692 4
+ALLOC resnetv15_stage3_conv2_weight 8957696 131072
+ALLOC resnetv15_stage3_conv3_fwd 9088768 4
+ALLOC resnetv15_stage3_conv3_weight 9088772 2359296
+ALLOC resnetv15_stage3_conv4_fwd 11448068 4
+ALLOC resnetv15_stage3_conv4_weight 11448072 2359296
+ALLOC resnetv15_stage3_relu0_fwd 13807368 4
+ALLOC resnetv15_stage3_relu1_fwd 13807372 4
+ALLOC resnetv15_stage4_plus0 13807376 4
+ALLOC resnetv15_stage4_plus1 13807380 4
+ALLOC resnetv15_stage4_activation0 13807384 4
+ALLOC resnetv15_stage4_activation1 13807388 4
+ALLOC resnetv15_stage4_batchnorm0_beta 13807392 2048
+ALLOC resnetv15_stage4_batchnorm0_fwd 13809440 4
+ALLOC resnetv15_stage4_batchnorm0_gamma 13809444 2048
+ALLOC resnetv15_stage4_batchnorm0_running_mean 13811492 2048
+ALLOC resnetv15_stage4_batchnorm0_running_var 13813540 2048
+ALLOC resnetv15_stage4_batchnorm1_beta 13815588 2048
+ALLOC resnetv15_stage4_batchnorm1_fwd 13817636 4
+ALLOC resnetv15_stage4_batchnorm1_gamma 13817640 2048
+ALLOC resnetv15_stage4_batchnorm1_running_mean 13819688 2048
+ALLOC resnetv15_stage4_batchnorm1_running_var 13821736 2048
+ALLOC resnetv15_stage4_batchnorm2_beta 13823784 2048
+ALLOC resnetv15_stage4_batchnorm2_fwd 13825832 4
+ALLOC resnetv15_stage4_batchnorm2_gamma 13825836 2048
+ALLOC resnetv15_stage4_batchnorm2_running_mean 13827884 2048
+ALLOC resnetv15_stage4_batchnorm2_running_var 13829932 2048
+ALLOC resnetv15_stage4_batchnorm3_beta 13831980 2048
+ALLOC resnetv15_stage4_batchnorm3_fwd 13834028 4
+ALLOC resnetv15_stage4_batchnorm3_gamma 13834032 2048
+ALLOC resnetv15_stage4_batchnorm3_running_mean 13836080 2048
+ALLOC resnetv15_stage4_batchnorm3_running_var 13838128 2048
+ALLOC resnetv15_stage4_batchnorm4_beta 13840176 2048
+ALLOC resnetv15_stage4_batchnorm4_fwd 13842224 4
+ALLOC resnetv15_stage4_batchnorm4_gamma 13842228 2048
+ALLOC resnetv15_stage4_batchnorm4_running_mean 13844276 2048
+ALLOC resnetv15_stage4_batchnorm4_running_var 13846324 2048
+ALLOC resnetv15_stage4_conv0_fwd 13848372 4
+ALLOC resnetv15_stage4_conv0_weight 13848376 4718592
+ALLOC resnetv15_stage4_conv1_fwd 18566968 4
+ALLOC resnetv15_stage4_conv1_weight 18566972 9437184
+ALLOC resnetv15_stage4_conv2_fwd 28004156 4
+ALLOC resnetv15_stage4_conv2_weight 28004160 524288
+ALLOC resnetv15_stage4_conv3_fwd 28528448 4
+ALLOC resnetv15_stage4_conv3_weight 28528452 9437184
+ALLOC resnetv15_stage4_conv4_fwd 37965636 4
+ALLOC resnetv15_stage4_conv4_weight 37965640 9437184
+ALLOC resnetv15_stage4_relu0_fwd 47402824 4
+ALLOC resnetv15_stage4_relu1_fwd 47402828 4
+EXEC input_data Input
+EXEC resnetv15_conv0_fwd Unknown
+EXEC resnetv15_batchnorm0_fwd Unknown
+EXEC resnetv15_relu0_fwd Unknown
+EXEC resnetv15_pool0_fwd Unknown
+EXEC resnetv15_stage1_conv0_fwd Unknown
+EXEC resnetv15_stage1_batchnorm0_fwd Unknown
+EXEC resnetv15_stage1_relu0_fwd Unknown
+EXEC resnetv15_stage1_conv1_fwd Unknown
+EXEC resnetv15_stage1_batchnorm1_fwd Unknown
+EXEC resnetv15_stage1_plus0 Unknown
+EXEC resnetv15_stage1_activation0 Unknown
+EXEC resnetv15_stage1_conv2_fwd Unknown
+EXEC resnetv15_stage1_batchnorm2_fwd Unknown
+EXEC resnetv15_stage1_relu1_fwd Unknown
+EXEC resnetv15_stage1_conv3_fwd Unknown
+EXEC resnetv15_stage1_batchnorm3_fwd Unknown
+EXEC resnetv15_stage1_plus1 Unknown
+EXEC resnetv15_stage1_activation1 Unknown
+EXEC resnetv15_stage2_conv2_fwd Unknown
+EXEC resnetv15_stage2_batchnorm2_fwd Unknown
+EXEC resnetv15_stage2_conv0_fwd Unknown
+EXEC resnetv15_stage2_batchnorm0_fwd Unknown
+EXEC resnetv15_stage2_relu0_fwd Unknown
+EXEC resnetv15_stage2_conv1_fwd Unknown
+EXEC resnetv15_stage2_batchnorm1_fwd Unknown
+EXEC resnetv15_stage2_plus0 Unknown
+EXEC resnetv15_stage2_activation0 Unknown
+EXEC resnetv15_stage2_conv3_fwd Unknown
+EXEC resnetv15_stage2_batchnorm3_fwd Unknown
+EXEC resnetv15_stage2_relu1_fwd Unknown
+EXEC resnetv15_stage2_conv4_fwd Unknown
+EXEC resnetv15_stage2_batchnorm4_fwd Unknown
+EXEC resnetv15_stage2_plus1 Unknown
+EXEC resnetv15_stage2_activation1 Unknown
+EXEC resnetv15_stage3_conv2_fwd Unknown
+EXEC resnetv15_stage3_batchnorm2_fwd Unknown
+EXEC resnetv15_stage3_conv0_fwd Unknown
+EXEC resnetv15_stage3_batchnorm0_fwd Unknown
+EXEC resnetv15_stage3_relu0_fwd Unknown
+EXEC resnetv15_stage3_conv1_fwd Unknown
+EXEC resnetv15_stage3_batchnorm1_fwd Unknown
+EXEC resnetv15_stage3_plus0 Unknown
+EXEC resnetv15_stage3_activation0 Unknown
+EXEC resnetv15_stage3_conv3_fwd Unknown
+EXEC resnetv15_stage3_batchnorm3_fwd Unknown
+EXEC resnetv15_stage3_relu1_fwd Unknown
+EXEC resnetv15_stage3_conv4_fwd Unknown
+EXEC resnetv15_stage3_batchnorm4_fwd Unknown
+EXEC resnetv15_stage3_plus1 Unknown
+EXEC resnetv15_stage3_activation1 Unknown
+EXEC resnetv15_stage4_conv2_fwd Unknown
+EXEC resnetv15_stage4_batchnorm2_fwd Unknown
+EXEC resnetv15_stage4_conv0_fwd Unknown
+EXEC resnetv15_stage4_batchnorm0_fwd Unknown
+EXEC resnetv15_stage4_relu0_fwd Unknown
+EXEC resnetv15_stage4_conv1_fwd Unknown
+EXEC resnetv15_stage4_batchnorm1_fwd Unknown
+EXEC resnetv15_stage4_plus0 Unknown
+EXEC resnetv15_stage4_activation0 Unknown
+EXEC resnetv15_stage4_conv3_fwd Unknown
+EXEC resnetv15_stage4_batchnorm3_fwd Unknown
+EXEC resnetv15_stage4_relu1_fwd Unknown
+EXEC resnetv15_stage4_conv4_fwd Unknown
+EXEC resnetv15_stage4_batchnorm4_fwd Unknown
+EXEC resnetv15_stage4_plus1 Unknown
+EXEC resnetv15_stage4_activation1 Unknown
+EXEC resnetv15_pool1_fwd Unknown
+EXEC flatten_170 Unknown
+EXEC resnetv15_dense0_fwd Unknown
+EXEC output_resnetv15_dense0_fwd Output
 
 ==== MLIR Bridge 占位输出 ====
 // MLIR bridge 占位骨架
@@ -67,16 +923,75 @@ EXEC output Output
 //   3. 复用 MLIR 的 canonicalization 与 conversion pass 基础设施。
 
 module {
-  // 算子: input kind=Input
-  // 算子: embedding kind=Embedding
-  // 算子: transformer_block_0.rmsnorm0 kind=RmsNorm
-  // 算子: transformer_block_0.qkv kind=QkvProject
-  // 算子: transformer_block_0.rope kind=Rope
-  // 算子: transformer_block_0.attention kind=Attention
-  // 算子: transformer_block_0.residual0 kind=ResidualAdd
-  // 算子: transformer_block_0.rmsnorm1 kind=RmsNorm
-  // 算子: transformer_block_0.swiglu kind=SwiGLU
-  // 算子: transformer_block_0.residual1 kind=ResidualAdd
-  // 算子: lm_head kind=LmHead
-  // 算子: output kind=Output
+  // 算子: input_data kind=Input
+  // 算子: resnetv15_conv0_fwd kind=Unknown
+  // 算子: resnetv15_batchnorm0_fwd kind=Unknown
+  // 算子: resnetv15_relu0_fwd kind=Unknown
+  // 算子: resnetv15_pool0_fwd kind=Unknown
+  // 算子: resnetv15_stage1_conv0_fwd kind=Unknown
+  // 算子: resnetv15_stage1_batchnorm0_fwd kind=Unknown
+  // 算子: resnetv15_stage1_relu0_fwd kind=Unknown
+  // 算子: resnetv15_stage1_conv1_fwd kind=Unknown
+  // 算子: resnetv15_stage1_batchnorm1_fwd kind=Unknown
+  // 算子: resnetv15_stage1_plus0 kind=Unknown
+  // 算子: resnetv15_stage1_activation0 kind=Unknown
+  // 算子: resnetv15_stage1_conv2_fwd kind=Unknown
+  // 算子: resnetv15_stage1_batchnorm2_fwd kind=Unknown
+  // 算子: resnetv15_stage1_relu1_fwd kind=Unknown
+  // 算子: resnetv15_stage1_conv3_fwd kind=Unknown
+  // 算子: resnetv15_stage1_batchnorm3_fwd kind=Unknown
+  // 算子: resnetv15_stage1_plus1 kind=Unknown
+  // 算子: resnetv15_stage1_activation1 kind=Unknown
+  // 算子: resnetv15_stage2_conv2_fwd kind=Unknown
+  // 算子: resnetv15_stage2_batchnorm2_fwd kind=Unknown
+  // 算子: resnetv15_stage2_conv0_fwd kind=Unknown
+  // 算子: resnetv15_stage2_batchnorm0_fwd kind=Unknown
+  // 算子: resnetv15_stage2_relu0_fwd kind=Unknown
+  // 算子: resnetv15_stage2_conv1_fwd kind=Unknown
+  // 算子: resnetv15_stage2_batchnorm1_fwd kind=Unknown
+  // 算子: resnetv15_stage2_plus0 kind=Unknown
+  // 算子: resnetv15_stage2_activation0 kind=Unknown
+  // 算子: resnetv15_stage2_conv3_fwd kind=Unknown
+  // 算子: resnetv15_stage2_batchnorm3_fwd kind=Unknown
+  // 算子: resnetv15_stage2_relu1_fwd kind=Unknown
+  // 算子: resnetv15_stage2_conv4_fwd kind=Unknown
+  // 算子: resnetv15_stage2_batchnorm4_fwd kind=Unknown
+  // 算子: resnetv15_stage2_plus1 kind=Unknown
+  // 算子: resnetv15_stage2_activation1 kind=Unknown
+  // 算子: resnetv15_stage3_conv2_fwd kind=Unknown
+  // 算子: resnetv15_stage3_batchnorm2_fwd kind=Unknown
+  // 算子: resnetv15_stage3_conv0_fwd kind=Unknown
+  // 算子: resnetv15_stage3_batchnorm0_fwd kind=Unknown
+  // 算子: resnetv15_stage3_relu0_fwd kind=Unknown
+  // 算子: resnetv15_stage3_conv1_fwd kind=Unknown
+  // 算子: resnetv15_stage3_batchnorm1_fwd kind=Unknown
+  // 算子: resnetv15_stage3_plus0 kind=Unknown
+  // 算子: resnetv15_stage3_activation0 kind=Unknown
+  // 算子: resnetv15_stage3_conv3_fwd kind=Unknown
+  // 算子: resnetv15_stage3_batchnorm3_fwd kind=Unknown
+  // 算子: resnetv15_stage3_relu1_fwd kind=Unknown
+  // 算子: resnetv15_stage3_conv4_fwd kind=Unknown
+  // 算子: resnetv15_stage3_batchnorm4_fwd kind=Unknown
+  // 算子: resnetv15_stage3_plus1 kind=Unknown
+  // 算子: resnetv15_stage3_activation1 kind=Unknown
+  // 算子: resnetv15_stage4_conv2_fwd kind=Unknown
+  // 算子: resnetv15_stage4_batchnorm2_fwd kind=Unknown
+  // 算子: resnetv15_stage4_conv0_fwd kind=Unknown
+  // 算子: resnetv15_stage4_batchnorm0_fwd kind=Unknown
+  // 算子: resnetv15_stage4_relu0_fwd kind=Unknown
+  // 算子: resnetv15_stage4_conv1_fwd kind=Unknown
+  // 算子: resnetv15_stage4_batchnorm1_fwd kind=Unknown
+  // 算子: resnetv15_stage4_plus0 kind=Unknown
+  // 算子: resnetv15_stage4_activation0 kind=Unknown
+  // 算子: resnetv15_stage4_conv3_fwd kind=Unknown
+  // 算子: resnetv15_stage4_batchnorm3_fwd kind=Unknown
+  // 算子: resnetv15_stage4_relu1_fwd kind=Unknown
+  // 算子: resnetv15_stage4_conv4_fwd kind=Unknown
+  // 算子: resnetv15_stage4_batchnorm4_fwd kind=Unknown
+  // 算子: resnetv15_stage4_plus1 kind=Unknown
+  // 算子: resnetv15_stage4_activation1 kind=Unknown
+  // 算子: resnetv15_pool1_fwd kind=Unknown
+  // 算子: flatten_170 kind=Unknown
+  // 算子: resnetv15_dense0_fwd kind=Unknown
+  // 算子: output_resnetv15_dense0_fwd kind=Output
 }
