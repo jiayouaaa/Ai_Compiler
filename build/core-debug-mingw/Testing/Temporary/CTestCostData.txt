@@ -1,2 +1,2 @@
-self_compiler_smoke 5 0.166745
+self_compiler_smoke 6 0.109028
 ---

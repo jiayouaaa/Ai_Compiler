@@ -1,5 +1,7 @@
 ﻿#include "self_compiler/passes/lower_transformer_to_runtime_pass.h"
 
+#include "self_compiler/ir/op_registry.h"
+
 namespace self_compiler::passes {
 
 namespace {
@@ -33,6 +35,27 @@ void RebuildTensorRefs(ir::Graph& graph) {
             ir::Tensor* t = graph.FindTensor(tid);
             if (t) t->consumer_ops.push_back(op.id);
         }
+    }
+}
+
+// 根据注册表的 weight 描述，为一个 op 创建 weight tensor 并加入 inputs
+// weight_shapes 按顺序对应注册表中 weight_inputs 的每个 WeightDesc
+void AttachWeights(
+    ir::Graph& graph,
+    ir::Operation& op,
+    const std::string& prefix,
+    const std::vector<ir::Shape>& weight_shapes,
+    ir::DataType dtype) {
+
+    const auto* info = ir::OpRegistry::Instance().Find(op.kind);
+    if (!info) return;
+
+    for (size_t i = 0; i < info->weight_inputs.size() && i < weight_shapes.size(); ++i) {
+        const auto& wd = info->weight_inputs[i];
+        int wt = graph.AddTensor(
+            prefix + "." + wd.name_suffix,
+            weight_shapes[i], dtype).id;
+        op.inputs.push_back(wt);
     }
 }
 
@@ -76,6 +99,11 @@ self_compiler::Status LowerTransformerToRuntimePass::Run(ir::Graph& graph) {
             num_heads * head_dim + 2 * num_kv_heads * head_dim);
         const ir::Shape qkv_shape = {{B, S, qkv_dim}};
 
+        // 维度常量，用于计算 weight 的 shape
+        const std::int64_t H = static_cast<std::int64_t>(hidden_size);
+        const std::int64_t H_kv = static_cast<std::int64_t>(num_kv_heads * head_dim);
+        const std::int64_t I = static_cast<std::int64_t>(intermediate_size);
+
         // --- 新建 7 个中间 tensor，按真实 shape ---
         const int rmsnorm0_out = graph.AddTensor(
             prefix + ".rmsnorm0_out", hidden_shape, dtype).id;
@@ -92,7 +120,7 @@ self_compiler::Status LowerTransformerToRuntimePass::Run(ir::Graph& graph) {
         const int swiglu_out = graph.AddTensor(
             prefix + ".swiglu_out", hidden_shape, dtype).id;
 
-        // --- 构建 8 个子 op，按需分发 attributes ---
+        // --- 构建 8 个子 op，按需分发 attributes，附加 weight tensor ---
 
         ir::Operation norm0;
         norm0.name = prefix + ".rmsnorm0";
@@ -100,6 +128,9 @@ self_compiler::Status LowerTransformerToRuntimePass::Run(ir::Graph& graph) {
         norm0.inputs = {block_input};
         norm0.outputs = {rmsnorm0_out};
         norm0.attributes = PickAttrs(op.attributes, {"hidden_size"});
+        AttachWeights(graph, norm0, prefix + ".rmsnorm0",
+            {{{H}}},  // weight: [H]
+            dtype);
 
         ir::Operation qkv;
         qkv.name = prefix + ".qkv_project";
@@ -108,6 +139,9 @@ self_compiler::Status LowerTransformerToRuntimePass::Run(ir::Graph& graph) {
         qkv.outputs = {qkv_out};
         qkv.attributes = PickAttrs(op.attributes,
             {"hidden_size", "num_attention_heads", "num_key_value_heads"});
+        AttachWeights(graph, qkv, prefix + ".qkv_project",
+            {{{H, H}}, {{H, H_kv}}, {{H, H_kv}}},  // wq:[H,H] wk:[H,H_kv] wv:[H,H_kv]
+            dtype);
 
         ir::Operation rope;
         rope.name = prefix + ".rope";
@@ -116,6 +150,8 @@ self_compiler::Status LowerTransformerToRuntimePass::Run(ir::Graph& graph) {
         rope.outputs = {rope_out};
         rope.attributes = PickAttrs(op.attributes,
             {"num_attention_heads", "max_position_embeddings"});
+        // rope 无 weight（注册表里 weight_inputs 为空，AttachWeights 不做任何事）
+        AttachWeights(graph, rope, prefix + ".rope", {}, dtype);
 
         ir::Operation attn;
         attn.name = prefix + ".attention";
@@ -124,12 +160,16 @@ self_compiler::Status LowerTransformerToRuntimePass::Run(ir::Graph& graph) {
         attn.outputs = {attention_out};
         attn.attributes = PickAttrs(op.attributes,
             {"num_attention_heads", "num_key_value_heads"});
+        AttachWeights(graph, attn, prefix + ".attention",
+            {{{H, H}}},  // wo: [H,H]
+            dtype);
 
         ir::Operation add0;
         add0.name = prefix + ".residual0";
         add0.kind = ir::OpKind::kResidualAdd;
         add0.inputs = {block_input, attention_out};
         add0.outputs = {residual0_out};
+        // residual_add 无 weight
 
         ir::Operation norm1;
         norm1.name = prefix + ".rmsnorm1";
@@ -137,6 +177,9 @@ self_compiler::Status LowerTransformerToRuntimePass::Run(ir::Graph& graph) {
         norm1.inputs = {residual0_out};
         norm1.outputs = {rmsnorm1_out};
         norm1.attributes = PickAttrs(op.attributes, {"hidden_size"});
+        AttachWeights(graph, norm1, prefix + ".rmsnorm1",
+            {{{H}}},  // weight: [H]
+            dtype);
 
         ir::Operation mlp;
         mlp.name = prefix + ".swiglu";
@@ -145,12 +188,16 @@ self_compiler::Status LowerTransformerToRuntimePass::Run(ir::Graph& graph) {
         mlp.outputs = {swiglu_out};
         mlp.attributes = PickAttrs(op.attributes,
             {"hidden_size", "intermediate_size"});
+        AttachWeights(graph, mlp, prefix + ".swiglu",
+            {{{H, I}}, {{H, I}}, {{I, H}}},  // w_gate:[H,I] w_up:[H,I] w_down:[I,H]
+            dtype);
 
         ir::Operation add1;
         add1.name = prefix + ".residual1";
         add1.kind = ir::OpKind::kResidualAdd;
         add1.inputs = {residual0_out, swiglu_out};
         add1.outputs = {block_output};
+        // residual_add 无 weight
 
         lowered.push_back(norm0);
         lowered.push_back(qkv);

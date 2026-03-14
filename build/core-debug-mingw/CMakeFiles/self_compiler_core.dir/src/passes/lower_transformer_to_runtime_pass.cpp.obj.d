@@ -156,4 +156,5 @@ CMakeFiles/self_compiler_core.dir/src/passes/lower_transformer_to_runtime_pass.c
  D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/sstream \
  D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/istream \
  D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/istream.tcc \
- D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/sstream.tcc
+ D:/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/bits/sstream.tcc \
+ D:/Ai_kernel/llama3/self_compiler/include/self_compiler/ir/op_registry.h

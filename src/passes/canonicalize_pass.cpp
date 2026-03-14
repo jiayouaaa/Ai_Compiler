@@ -72,16 +72,32 @@ self_compiler::Status CheckOpArity(const self_compiler::ir::Operation& op) {
         return self_compiler::Status::Ok();
     }
 
-    if (actual_input_count < info->min_inputs) {
+    // num_activation_inputs == -1 表示不限制 activation 输入数（如 Concatenation）
+    // 此时只检查输出数
+    if (info->num_activation_inputs < 0) {
+        if (info->num_outputs >= 0 && actual_output_count != info->num_outputs) {
+            return self_compiler::Status::Error(
+                op.name + ": " + info->name + " should have " +
+                std::to_string(info->num_outputs) + " outputs, but has " +
+                std::to_string(actual_output_count));
+        }
+        return self_compiler::Status::Ok();
+    }
+
+    // 合法的 inputs 范围 = activation 数 + 必须 weight 数 ~ activation 数 + 全部 weight 数
+    const int min_inputs = info->MinInputs();
+    const int max_inputs = info->MaxInputs();
+
+    if (actual_input_count < min_inputs) {
         return self_compiler::Status::Error(
             op.name + ": " + info->name + " requires at least " +
-            std::to_string(info->min_inputs) + " inputs, but has " +
+            std::to_string(min_inputs) + " inputs, but has " +
             std::to_string(actual_input_count));
     }
-    if (actual_input_count > info->max_inputs) {
+    if (actual_input_count > max_inputs) {
         return self_compiler::Status::Error(
             op.name + ": " + info->name + " allows at most " +
-            std::to_string(info->max_inputs) + " inputs, but has " +
+            std::to_string(max_inputs) + " inputs, but has " +
             std::to_string(actual_input_count));
     }
     // num_outputs == -1 表示不限制输出数量（如 Split）
