@@ -27,7 +27,14 @@ namespace {
 //   5 = 32 位定长
 //
 // 这里只实现解码 ONNX 所需的最小子集，不依赖任何外部库。
-
+// ================================================================
+//字节流: [08] [96 01] [12] [03] [42 6F 62]
+//         ↓      ↓    ↓      ↓      ↓
+//        Tag   Value   Tag      Len   Data
+//         ↓      ↓    ↓            ↓
+//      id = 1   150   name = 2      "Bob"
+//      varint         len + bytes
+// ================================================================
 enum class WireType : int {
     kVarint = 0,
     kFixed64 = 1,
@@ -255,6 +262,9 @@ std::string JoinIntValues(const std::vector<int64_t>& values) {
     return joined;
 }
 
+// 判断张量的维度，conv的pad是否相同
+// 如果是相同的，就可以用一个标量来替代，简化计算
+// 
 bool TryGetUniformValue(const std::vector<int64_t>& values, int64_t& out) {
     if (values.empty()) {
         return false;
@@ -269,6 +279,7 @@ bool TryGetUniformValue(const std::vector<int64_t>& values, int64_t& out) {
     return true;
 }
 
+//添加属性的派生别名，方便后续转换成 IR Operation 时使用统一的属性名
 void StoreDerivedAliases(
     const std::string& attr_name,
     const std::vector<int64_t>& values,
@@ -518,7 +529,7 @@ self_compiler::Status OnnxImporter::Import(
     if (!file.is_open()) {
         return Status::Error("无法打开 ONNX 文件: " + input_path);
     }
-    std::vector<uint8_t> buffer(
+    std::vector<uint8_t> buffer(                    //C++11有更便捷的写法：std::vector<uint8_t> buffer(std::istreambuf_iterator<char>{file}, {});
         (std::istreambuf_iterator<char>(file)),
         std::istreambuf_iterator<char>());
     if (buffer.empty()) {

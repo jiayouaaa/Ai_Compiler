@@ -1,31 +1,131 @@
 ﻿#include "self_compiler/memory/memory_planner.h"
 
+#include <algorithm>
+#include <array>
+#include <vector>
+
 namespace self_compiler::memory {
 
-MemoryPlan MemoryPlanner::BuildPlan(const std::vector<LiveInterval>& intervals) const {
-    MemoryPlan plan;
-    std::size_t next_offset = 0;
+namespace {
 
-    for (const auto& interval : intervals) {
-        BufferAllocation allocation;
-        allocation.tensor_id = interval.tensor_id;
-        allocation.tensor_name = interval.tensor_name;
-        allocation.offset = next_offset;
-        allocation.size_in_bytes = interval.bytes;
-        next_offset += interval.bytes;
+constexpr std::size_t kSramThresholdBytes = 256 * 1024;
 
-        plan.allocations.push_back(allocation);
-        plan.total_bytes += interval.bytes;
+// 判断两个 live interval 的生命周期是否重叠
+// 重叠的 tensor 不能共享内存，不重叠的可以
+bool Overlaps(const LiveInterval& a, const LiveInterval& b) {
+    // a 在 b 之前结束，或 b 在 a 之前结束 → 不重叠
+    // 注意：end == start 算重叠（同一个 op 里一个消费完、另一个才产生，但保守起见算重叠）
+    return a.start_op_index <= b.end_op_index &&
+           b.start_op_index <= a.end_op_index;
+}
+
+MemoryRegion ClassifyRegion(const ir::Graph& graph, const LiveInterval& interval) {
+    const ir::Tensor* tensor = graph.FindTensor(interval.tensor_id);
+    if (tensor != nullptr && tensor->producer_op == -1) {
+        return MemoryRegion::kFlash;
     }
 
-    plan.peak_bytes = plan.total_bytes;
+    if (interval.bytes > kSramThresholdBytes) {
+        return MemoryRegion::kDram;
+    }
 
-    // 伪代码：后续请用真实静态内存规划逻辑替换这里
-    // 按开始时间对 live interval 排序
-    // 维护按结束时间排序的活动区间集合
-    // 对不重叠的生命周期尝试复用已经释放的 buffer
-    // 可进一步扩展为 SRAM / DRAM / Flash 多内存区域规划
-    // 可进一步按延迟与峰值内存对分配方案评分
+    return MemoryRegion::kSram;
+}
+
+std::size_t RegionIndex(MemoryRegion region) {
+    switch (region) {
+        case MemoryRegion::kSram:
+            return 0;
+        case MemoryRegion::kDram:
+            return 1;
+        case MemoryRegion::kFlash:
+            return 2;
+        default:
+            return 0;
+    }
+}
+
+struct AllocatedBlock {
+    std::size_t offset = 0;
+    std::size_t size = 0;
+    const LiveInterval* interval = nullptr;
+};
+
+struct RegionState {
+    std::vector<AllocatedBlock> blocks;
+    std::size_t high_watermark = 0;
+};
+
+}  // namespace
+
+MemoryPlan MemoryPlanner::BuildPlan(
+    const ir::Graph& graph,
+    const std::vector<LiveInterval>& intervals) const {
+    // 按 bytes 从大到小排序（大 tensor 优先分配，减少碎片）
+    std::vector<std::size_t> order(intervals.size());
+    for (std::size_t i = 0; i < order.size(); ++i) {
+        order[i] = i;
+    }
+    std::sort(order.begin(), order.end(), [&](std::size_t a, std::size_t b) {
+        return intervals[a].bytes > intervals[b].bytes;
+    });
+
+    // 每个 tensor 的分配结果，按原始 tensor_id 索引
+    std::vector<BufferAllocation> allocs(intervals.size());
+    std::array<RegionState, 3> region_states;
+    for (auto& state : region_states) {
+        state.blocks.reserve(intervals.size());
+    }
+
+    for (std::size_t idx : order) {
+        const auto& interval = intervals[idx];
+        const MemoryRegion region = ClassifyRegion(graph, interval);
+        RegionState& region_state = region_states[RegionIndex(region)];
+
+        // 尝试在已有的块中找一个可以复用的位置
+        // 条件：大小 >= 当前 tensor，且生命周期不重叠
+        std::size_t best_offset = 0;
+        bool found_reuse = false;
+        std::size_t best_waste = SIZE_MAX;  // 选浪费最小的（best-fit）
+
+        const bool allow_reuse = region != MemoryRegion::kFlash;
+        for (const auto& block : region_state.blocks) {
+            if (allow_reuse && block.size >= interval.bytes && !Overlaps(*block.interval, interval)) {
+                std::size_t waste = block.size - interval.bytes;
+                if (waste < best_waste) {
+                    best_waste = waste;
+                    best_offset = block.offset;
+                    found_reuse = true;
+                }
+            }
+        }
+
+        if (found_reuse) {
+            // 复用已有的块
+            allocs[idx].offset = best_offset;
+            allocs[idx].size_in_bytes = interval.bytes;
+        } else {
+            // 没有可复用的块，在末尾新分配
+            allocs[idx].offset = region_state.high_watermark;
+            allocs[idx].size_in_bytes = interval.bytes;
+            region_state.high_watermark += interval.bytes;
+        }
+
+        allocs[idx].tensor_id = interval.tensor_id;
+        allocs[idx].tensor_name = interval.tensor_name;
+        allocs[idx].region = region;
+
+        // 记录这个分配块
+        region_state.blocks.push_back({allocs[idx].offset, interval.bytes, &interval});
+    }
+
+    // 组装结果（按 tensor_id 顺序输出，和原来一致）
+    MemoryPlan plan;
+    plan.allocations = std::move(allocs);
+    for (const auto& state : region_states) {
+        plan.total_bytes += state.high_watermark;
+        plan.peak_bytes += state.high_watermark;
+    }
 
     return plan;
 }

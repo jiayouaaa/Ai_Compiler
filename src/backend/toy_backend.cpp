@@ -6,7 +6,11 @@ CommandStream ToyAcceleratorBackend::Emit(const ir::Graph& graph, const memory::
     CommandStream stream;
 
     for (const auto& alloc : plan.allocations) {
-        stream.Add({"ALLOC", {alloc.tensor_name, std::to_string(alloc.offset), std::to_string(alloc.size_in_bytes)}});
+        stream.Add({"ALLOC", {
+            alloc.tensor_name,
+            memory::ToString(alloc.region),
+            std::to_string(alloc.offset),
+            std::to_string(alloc.size_in_bytes)}});
     }
 
     for (const auto& op : graph.operations()) {

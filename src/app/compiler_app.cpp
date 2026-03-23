@@ -71,12 +71,13 @@ self_compiler::Status CompilerApp::Run(const RunOptions& options, std::ostream& 
     memory::LiveIntervalAnalyzer analyzer;
     auto intervals = analyzer.Analyze(graph);
     memory::MemoryPlanner planner;
-    auto plan = planner.BuildPlan(intervals);
+    auto plan = planner.BuildPlan(graph, intervals);
 
     out << "\n==== 静态内存规划 ====\n";
     out << "total_bytes=" << plan.total_bytes << " peak_bytes=" << plan.peak_bytes << "\n";
     for (const auto& alloc : plan.allocations) {
-        out << "  " << alloc.tensor_name << " offset=" << alloc.offset
+        out << "  " << alloc.tensor_name << " " << memory::ToString(alloc.region)
+            << " offset=" << alloc.offset
             << " size=" << alloc.size_in_bytes << "\n";
     }
 
