@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"D:/Ai_kernel/llama3/self_compiler/build/core-debug-mingw/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

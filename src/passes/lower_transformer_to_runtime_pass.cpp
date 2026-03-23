@@ -153,15 +153,102 @@ self_compiler::Status LowerTransformerToRuntimePass::Run(ir::Graph& graph) {
         // rope 无 weight（注册表里 weight_inputs 为空，AttachWeights 不做任何事）
         AttachWeights(graph, rope, prefix + ".rope", {}, dtype);
 
-        ir::Operation attn;
-        attn.name = prefix + ".attention";
-        attn.kind = ir::OpKind::kAttention;
-        attn.inputs = {rope_out};
-        attn.outputs = {attention_out};
-        attn.attributes = PickAttrs(op.attributes,
+        // --- attention 细拆：7 个子 op 替代原来的 1 个 attention 黑盒 ---
+        // 数据流：rope_out → split_qkv → score_matmul → score_scale →
+        //         causal_mask → softmax → context_matmul → output_proj → attention_out
+
+        const std::int64_t nH = static_cast<std::int64_t>(num_heads);
+        const std::int64_t d = static_cast<std::int64_t>(head_dim);
+
+        // attention 内部的中间 tensor shape
+        const ir::Shape q_shape = {{B, nH, S, d}};        // [B, num_heads, S, head_dim]
+        const ir::Shape kv_shape = {{B, nH, S, d}};       // [B, num_heads, S, head_dim]（GQA 扩展后）
+        const ir::Shape score_shape = {{B, nH, S, S}};    // [B, num_heads, S, S]
+        const ir::Shape context_shape = {{B, nH, S, d}};  // [B, num_heads, S, head_dim]
+
+        // 中间 tensor
+        const int q_out = graph.AddTensor(
+            prefix + ".attn.q", q_shape, dtype).id;
+        const int k_out = graph.AddTensor(
+            prefix + ".attn.k", kv_shape, dtype).id;
+        const int v_out = graph.AddTensor(
+            prefix + ".attn.v", kv_shape, dtype).id;
+        const int raw_scores = graph.AddTensor(
+            prefix + ".attn.raw_scores", score_shape, dtype).id;
+        const int scaled_scores = graph.AddTensor(
+            prefix + ".attn.scaled_scores", score_shape, dtype).id;
+        const int masked_scores = graph.AddTensor(
+            prefix + ".attn.masked_scores", score_shape, dtype).id;
+        const int attn_weights = graph.AddTensor(
+            prefix + ".attn.weights", score_shape, dtype).id;
+        const int context = graph.AddTensor(
+            prefix + ".attn.context", context_shape, dtype).id;
+        const int concat_out = graph.AddTensor(
+            prefix + ".attn.concat", hidden_shape, dtype).id;
+
+        // ① split_qkv: 从 rope_out [B,S,Q+K+V] 拆出 Q/K/V 并变形为多头格式
+        //    内含：按维度拆分 + reshape 成 [B,nH,S,d] + GQA 头扩展
+        ir::Operation split_qkv;
+        split_qkv.name = prefix + ".attn.split_qkv";
+        split_qkv.kind = ir::OpKind::kSplitQkv;
+        split_qkv.inputs = {rope_out};
+        split_qkv.outputs = {q_out, k_out, v_out};
+        split_qkv.attributes = PickAttrs(op.attributes,
             {"num_attention_heads", "num_key_value_heads"});
-        AttachWeights(graph, attn, prefix + ".attention",
-            {{{H, H}}},  // wo: [H,H]
+
+        // ② score_matmul: Q × Kᵀ → raw_scores [B,nH,S,S]
+        ir::Operation score_mm;
+        score_mm.name = prefix + ".attn.score_matmul";
+        score_mm.kind = ir::OpKind::kBatchMatMul;
+        score_mm.inputs = {q_out, k_out};
+        score_mm.outputs = {raw_scores};
+
+        // ③ score_scale: raw_scores × scale_factor → scaled_scores
+        //    scale_factor 是一个标量 tensor，值 = 1/sqrt(head_dim)
+        const int scale_tensor = graph.AddTensor(
+            prefix + ".attn.scale_factor", {{1}}, dtype).id;
+        ir::Operation scale;
+        scale.name = prefix + ".attn.score_scale";
+        scale.kind = ir::OpKind::kMul;
+        scale.inputs = {raw_scores, scale_tensor};
+        scale.outputs = {scaled_scores};
+
+        // ④ causal_mask: 把未来位置设为 -∞
+        ir::Operation mask;
+        mask.name = prefix + ".attn.causal_mask";
+        mask.kind = ir::OpKind::kCausalMask;
+        mask.inputs = {scaled_scores};
+        mask.outputs = {masked_scores};
+
+        // ⑤ softmax: 归一化为概率
+        ir::Operation sm;
+        sm.name = prefix + ".attn.softmax";
+        sm.kind = ir::OpKind::kSoftmax;
+        sm.inputs = {masked_scores};
+        sm.outputs = {attn_weights};
+
+        // ⑥ context_matmul: attn_weights × V → context [B,nH,S,d]
+        ir::Operation ctx_mm;
+        ctx_mm.name = prefix + ".attn.context_matmul";
+        ctx_mm.kind = ir::OpKind::kBatchMatMul;
+        ctx_mm.inputs = {attn_weights, v_out};
+        ctx_mm.outputs = {context};
+
+        // ⑦ reshape: [B,nH,S,d] → [B,S,H]（多头拼接回原始维度）
+        ir::Operation reshape;
+        reshape.name = prefix + ".attn.reshape";
+        reshape.kind = ir::OpKind::kReshape;
+        reshape.inputs = {context};
+        reshape.outputs = {concat_out};
+
+        // ⑧ output_proj: [B,S,H] × Wo → [B,S,H]
+        ir::Operation out_proj;
+        out_proj.name = prefix + ".attn.output_proj";
+        out_proj.kind = ir::OpKind::kLinear;
+        out_proj.inputs = {concat_out};
+        out_proj.outputs = {attention_out};
+        AttachWeights(graph, out_proj, prefix + ".attn.output_proj",
+            {{{H, H}}},  // wo: [H, H]
             dtype);
 
         ir::Operation add0;
@@ -202,7 +289,14 @@ self_compiler::Status LowerTransformerToRuntimePass::Run(ir::Graph& graph) {
         lowered.push_back(norm0);
         lowered.push_back(qkv);
         lowered.push_back(rope);
-        lowered.push_back(attn);
+        lowered.push_back(split_qkv);
+        lowered.push_back(score_mm);
+        lowered.push_back(scale);
+        lowered.push_back(mask);
+        lowered.push_back(sm);
+        lowered.push_back(ctx_mm);
+        lowered.push_back(reshape);
+        lowered.push_back(out_proj);
         lowered.push_back(add0);
         lowered.push_back(norm1);
         lowered.push_back(mlp);

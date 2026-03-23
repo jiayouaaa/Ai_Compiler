@@ -21,6 +21,9 @@ enum class OpKind {
     kQkvProject,
     kRope,
     kAttention,
+    kSplitQkv,
+    kBatchMatMul,
+    kCausalMask,
     kSoftmax,
     kResidualAdd,
     kSwiGLU,
@@ -59,6 +62,9 @@ inline std::string ToString(OpKind kind) {
         case OpKind::kQkvProject:        return "QkvProject";
         case OpKind::kRope:              return "Rope";
         case OpKind::kAttention:         return "Attention";
+        case OpKind::kSplitQkv:          return "SplitQkv";
+        case OpKind::kBatchMatMul:       return "BatchMatMul";
+        case OpKind::kCausalMask:        return "CausalMask";
         case OpKind::kSoftmax:           return "Softmax";
         case OpKind::kResidualAdd:       return "ResidualAdd";
         case OpKind::kSwiGLU:            return "SwiGLU";

@@ -47,11 +47,11 @@ const OpRegistry& OpRegistry::Instance() {
             false});
         r.Register(OpKind::kEmbedding, {
             "Embedding", 1, 1,
-            {{"weight", false}},
+            {{"weight", true}},
             {}, false});
         r.Register(OpKind::kLmHead, {
             "LmHead", 1, 1,
-            {{"weight", false}},
+            {{"weight", true}},
             {}, false});
 
         // ================================================================
@@ -75,6 +75,19 @@ const OpRegistry& OpRegistry::Instance() {
             {{"wo", true}},
             {"num_attention_heads", "num_key_value_heads"},
             false});
+        r.Register(OpKind::kSplitQkv, {
+            "SplitQkv", 1, 3,      // 1 个 activation 输入（QKV 拼接），3 个输出（Q/K/V）
+            {},
+            {"num_attention_heads", "num_key_value_heads"},
+            false});
+        r.Register(OpKind::kBatchMatMul, {
+            "BatchMatMul", 2, 1,    // 2 个 activation 输入，1 个输出
+            {},
+            {}, true});
+        r.Register(OpKind::kCausalMask, {
+            "CausalMask", 1, 1,     // 加因果掩码
+            {},
+            {}, false});
         r.Register(OpKind::kSoftmax, {
             "Softmax", 1, 1, {}, {}, true});
         r.Register(OpKind::kResidualAdd, {

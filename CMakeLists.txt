@@ -17,6 +17,7 @@ add_library(self_compiler_core
     src/frontend/onnx_importer.cpp
     src/passes/pass_manager.cpp
     src/passes/canonicalize_pass.cpp
+    src/passes/recognize_onnx_ops_pass.cpp
     src/passes/lower_transformer_to_runtime_pass.cpp
     src/memory/live_interval.cpp
     src/memory/memory_planner.cpp

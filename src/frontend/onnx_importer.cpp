@@ -167,6 +167,7 @@ struct OnnxNode {
     std::string op_type;
     std::vector<std::string> inputs;
     std::vector<std::string> outputs;
+    std::map<std::string, std::string> attributes;
 };
 
 // 整个图
@@ -203,6 +204,12 @@ namespace field {
     constexpr int kNodeOutput = 2;
     constexpr int kNodeName = 3;
     constexpr int kNodeOpType = 4;
+    constexpr int kNodeAttribute = 5;
+
+    // AttributeProto
+    constexpr int kAttributeName = 1;
+    constexpr int kAttributeInt = 3;
+    constexpr int kAttributeInts = 8;
 
     // ValueInfoProto
     constexpr int kValueInfoName = 1;
@@ -227,6 +234,98 @@ namespace field {
     constexpr int kTensorProtoDataType = 2;
     constexpr int kTensorProtoName = 8;
 }  // namespace field
+
+bool IsTargetNodeAttribute(const std::string& name) {
+    return name == "kernel_shape" ||
+        name == "strides" ||
+        name == "pads" ||
+        name == "axis" ||
+        name == "perm" ||
+        name == "group";
+}
+
+std::string JoinIntValues(const std::vector<int64_t>& values) {
+    std::string joined;
+    for (std::size_t i = 0; i < values.size(); ++i) {
+        if (i != 0) {
+            joined += ",";
+        }
+        joined += std::to_string(values[i]);
+    }
+    return joined;
+}
+
+bool TryGetUniformValue(const std::vector<int64_t>& values, int64_t& out) {
+    if (values.empty()) {
+        return false;
+    }
+
+    out = values.front();
+    for (std::size_t i = 1; i < values.size(); ++i) {
+        if (values[i] != out) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void StoreDerivedAliases(
+    const std::string& attr_name,
+    const std::vector<int64_t>& values,
+    std::map<std::string, std::string>& attrs) {
+    int64_t uniform_value = 0;
+    if (!TryGetUniformValue(values, uniform_value)) {
+        return;
+    }
+
+    if (attr_name == "kernel_shape") {
+        attrs["kernel_size"] = std::to_string(uniform_value);
+    } else if (attr_name == "strides") {
+        attrs["stride"] = std::to_string(uniform_value);
+    } else if (attr_name == "pads") {
+        attrs["padding"] = std::to_string(uniform_value);
+    }
+}
+
+void ParseAttribute(ProtoReader reader, std::map<std::string, std::string>& attrs) {
+    std::string attr_name;
+    bool has_scalar_int = false;
+    int64_t scalar_int = 0;
+    std::vector<int64_t> int_values;
+
+    while (reader.HasMore()) {
+        auto [f, w] = reader.ReadTag();
+        if (f == field::kAttributeName && w == WireType::kLengthDelimited) {
+            attr_name = reader.ReadString();
+        } else if (f == field::kAttributeInt && w == WireType::kVarint) {
+            has_scalar_int = true;
+            scalar_int = static_cast<int64_t>(reader.ReadVarint());
+        } else if (f == field::kAttributeInts && w == WireType::kVarint) {
+            int_values.push_back(static_cast<int64_t>(reader.ReadVarint()));
+        } else if (f == field::kAttributeInts && w == WireType::kLengthDelimited) {
+            ProtoReader packed = reader.ReadSubMessage();
+            while (packed.HasMore()) {
+                int_values.push_back(static_cast<int64_t>(packed.ReadVarint()));
+            }
+        } else {
+            reader.SkipField(w);
+        }
+    }
+
+    if (!IsTargetNodeAttribute(attr_name)) {
+        return;
+    }
+
+    if (!int_values.empty()) {
+        attrs[attr_name] = JoinIntValues(int_values);
+        StoreDerivedAliases(attr_name, int_values, attrs);
+        return;
+    }
+
+    if (has_scalar_int) {
+        attrs[attr_name] = std::to_string(scalar_int);
+    }
+}
 
 OnnxDimension ParseDimension(ProtoReader reader) {
     OnnxDimension dim;
@@ -307,6 +406,8 @@ OnnxNode ParseNode(ProtoReader reader) {
             node.name = reader.ReadString();
         } else if (f == field::kNodeOpType && w == WireType::kLengthDelimited) {
             node.op_type = reader.ReadString();
+        } else if (f == field::kNodeAttribute && w == WireType::kLengthDelimited) {
+            ParseAttribute(reader.ReadSubMessage(), node.attributes);
         } else {
             reader.SkipField(w);
         }
@@ -551,6 +652,9 @@ self_compiler::Status OnnxImporter::Import(
         auto& op = graph.AddOperation(
             op_name, ir::OpKind::kUnknown, inputs, outputs);
         op.attributes["onnx_op_type"] = node.op_type;
+        for (const auto& attr : node.attributes) {
+            op.attributes[attr.first] = attr.second;
+        }
     }
 
     // ---- 8. 创建 Output op ----

@@ -1,0 +1,112 @@
+  问题 1：OnnxImporter 怎么读 protobuf 格式
+
+  背景：ONNX 文件是 protobuf 二进制格式，需要解析
+  选项：① 用 protobuf 库（需要装依赖）② Python 中转 ③ 手写解码器
+  决策：手写最小 protobuf 解码器，零外部依赖
+  原因：MinGW + protobuf 编译兼容性差，Python 中转不是真正的导入
+
+  问题 2：ONNX 算子映射到哪个 OpKind
+
+  背景：ONNX 的 MatMul 和我们的 kLinear 语义不同（arity 不同）
+  尝试：最初想映射 MatMul→kLinear、Add→kResidualAdd
+  问题：MatMul 有 2 输入但 kLinear 是 1 输入，CanonicalizePass 会拒绝
+  决策：所有 ONNX 算子统一映射为 kUnknown，原始 op_type 存到 attributes
+
+  问题 3：CanonicalizePass 拒绝 ONNX 导入的图
+
+  原因 1：CheckOpArity 的 else 分支要求所有非特殊 op 必须 1 输入 1 输出
+  原因 2：Input op 硬编码了 dtype 必须是 i32（只考虑了 token_ids）
+  解决：给 kUnknown 加分支跳过 arity 检查，Input op 放宽为只检查 shape 非空
+
+  问题 4：权重 tensor 和模型输入的区分
+
+  背景：ONNX 的 graph.input 里既有真正输入又有权重
+  问题：如果不区分，会给权重也创建 Input op
+  解决：读取 initializer 列表收集权重名字，创建 Input op 时跳过
+
+  问题 5：中间 tensor 没有类型信息
+
+  背景：ONNX 的 value_info 字段存中间 tensor 的 shape/dtype
+  问题：最初只解析了 graph.input 和 graph.output，中间 tensor 没有 shape
+  解决：增加解析 GraphProto.value_info（field 13）
+
+  Phase 3：Lowering
+
+  问题 6：at(0) 无防御检查 vs 重复检查
+
+  背景：Lowering 里用 op.inputs.at(0) 取 TransformerBlock 的输入
+  最初方案：加一个 inputs.size() != 1 的检查
+  用户 review：这和 CanonicalizePass 的 CheckOpArity 完全重复
+  决策：去掉重复检查，改为 op.inputs[0]，信任前置 pass 已验证
+  原则：两个 pass 的职责不重叠
+
+  问题 7：qkv_out 和 rope_out 的 shape 错误
+
+  背景：最初所有中间 tensor 都用 [B,S,H] 作为 shape
+  问题：qkv_out 是 Q+K+V 拼接，实际是 [B,S,3072] 不是 [B,S,2048]
+  解决：从 attributes 读取 num_heads/num_kv_heads，计算真实的 qkv_dim
+
+  问题 8：attributes 全量复制给子 op
+
+  背景：最初每个子 op 都拿到 TransformerBlock 的全部 6 个属性
+  问题：rmsnorm 不需要 num_attention_heads，swiglu 不需要 num_kv_heads
+  解决：写 PickAttrs 函数，按需分发属性
+
+  问题 9：tensor↔op 引用断裂（真实 bug）
+
+  背景：Lowering 创建子 op 时用的是手工构建 struct，不经过 graph.AddOperation
+  问题：
+    - 新建的中间 tensor 的 producer_op/consumer_ops 全是默认值
+    - 原有 tensor 的引用还指向已被替换的旧 op
+    - op id 重新编号后引用全部失效
+  解决：Lowering 结束后调用 RebuildTensorRefs，清空并重建所有引用
+
+  OpRegistry 重构
+
+  问题 10：加新算子要改 4~6 个文件
+
+  背景：每加一个 op 要改 OpKind 枚举、ToString、CheckOpArity、CheckRequiredAttributes 等
+  问题：20+ 个算子的 switch 会变成 1500+ 行巨型函数
+  决策：创建 OpRegistry 算子注册表，pass 查表不写 switch
+  效果：加新算子从改 4~6 处变成改 3 处（枚举 + ToString + 注册表）
+
+  问题 11：OpInfo 的 min_inputs/max_inputs 无法区分 activation 和 weight
+
+  背景：最初 OpInfo 只有 min_inputs/max_inputs
+  问题：加 weight tensor 后，同一个 op 的输入既有 activation 又有 weight，无法区分
+  决策：把 min_inputs/max_inputs 拆成 num_activation_inputs + weight_inputs 描述
+        合法范围由 MinInputs()/MaxInputs() 自动从两部分算出
+
+  Weight Tensor 建模
+
+  问题 12：Embedding/LmHead 的 weight 检查失败
+
+  背景：注册表给 Embedding 定义了 weight required=true
+  问题：Importer 建图时没有给 Embedding 创建 weight tensor
+        CanonicalizePass 检查 arity 时发现输入数不够，报错
+  解决：把 Embedding/LmHead 的 weight 改为 required=false（可选）
+        等 importer 升级后再改回 required=true
+
+  Attention 细拆
+
+  问题 13：score_scale 用 kMul 但输入数不匹配
+
+  背景：kMul 在注册表里定义为 2 个 activation 输入
+  问题：最初 score_scale 只有 1 个 tensor 输入，标量放在 attributes 里
+  尝试：改 kMul 的 num_activation_inputs 为 1
+  问题：这样会让通用的 tensor×tensor 乘法也变成 1 个输入，语义不统一
+  决策：创建一个标量 tensor（shape=[1]），作为 kMul 的第二个输入
+  效果：kMul 保持 2 输入不变，标量也是 tensor，语义统一
+
+  问题 14：Attention 拆到多细
+
+  选项 A：全部拆成最小粒度（12+ 个 op），包括每个 reshape/transpose
+  选项 B：按逻辑分组（5 个 op），把多步合并
+  选项 C：混合——计算步骤单独暴露，形状变换合并进相邻计算
+  决策：选方案 C
+  原则：matmul 和 softmax 必须单独暴露（真正消耗计算和内存的大操作）
+        reshape/transpose 合并进前后 op（零计算的纯形状变换）
+
+
+
+cmake --build --preset build-core-debug --target clean

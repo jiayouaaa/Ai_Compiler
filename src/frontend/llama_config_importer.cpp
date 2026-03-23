@@ -107,7 +107,15 @@ ir::Graph BuildLlamaGraph(const LlamaConfigSpec& spec) {
         spec.activation_dtype).id;
 
     graph.AddOperation("input", ir::OpKind::kInput, {}, {input_ids});
-    graph.AddOperation("embedding", ir::OpKind::kEmbedding, {input_ids}, {embedding_output});
+
+    // Embedding weight: [vocab_size, hidden_size]
+    const int embedding_weight = graph.AddTensor(
+        "embedding.weight",
+        {{static_cast<std::int64_t>(spec.vocab_size),
+          static_cast<std::int64_t>(spec.hidden_size)}},
+        spec.activation_dtype).id;
+    graph.AddOperation("embedding", ir::OpKind::kEmbedding,
+        {input_ids, embedding_weight}, {embedding_output});
 
     int current_tensor = embedding_output;
     for (int layer_index = 0; layer_index < spec.num_hidden_layers; ++layer_index) {
@@ -134,7 +142,15 @@ ir::Graph BuildLlamaGraph(const LlamaConfigSpec& spec) {
         "logits",
         {{spec.batch, spec.sequence_length, spec.vocab_size}},
         spec.activation_dtype).id;
-    graph.AddOperation("lm_head", ir::OpKind::kLmHead, {current_tensor}, {logits});
+
+    // LmHead weight: [hidden_size, vocab_size]
+    const int lm_head_weight = graph.AddTensor(
+        "lm_head.weight",
+        {{static_cast<std::int64_t>(spec.hidden_size),
+          static_cast<std::int64_t>(spec.vocab_size)}},
+        spec.activation_dtype).id;
+    graph.AddOperation("lm_head", ir::OpKind::kLmHead,
+        {current_tensor, lm_head_weight}, {logits});
     graph.AddOperation("output", ir::OpKind::kOutput, {logits}, {});
 
     return graph;
