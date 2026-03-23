@@ -1,2 +1,43 @@
+# Build output
 /build/
+/cmake-build-*/
+/out/
+/dist/
+
+# CMake-generated files when they appear outside build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/
+
+# Compiled binaries and intermediate artifacts
+*.obj
+*.o
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+*.exe
+*.pdb
+*.ilk
+*.exp
+
+# Logs and transient runtime output
+*.log
+*.tmp
+*.cache
+/utf8-logs/
+
+# Local editor / machine-specific files
+.vs/
+.vscode/
+.idea/
+CMakeUserPresets.json
+
+# Generated or temporary model files.
+# Keep intentional small example models explicit.
 /examples/*.onnx
+!/examples/resnet18.onnx
+!/examples/test_model.onnx
