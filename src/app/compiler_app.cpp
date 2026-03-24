@@ -9,6 +9,7 @@
 #include "self_compiler/memory/memory_planner.h"
 #include "self_compiler/mlir/mlir_bridge.h"
 #include "self_compiler/passes/canonicalize_pass.h"
+#include "self_compiler/passes/graph_partition_pass.h"
 #include "self_compiler/passes/lower_transformer_to_runtime_pass.h"
 #include "self_compiler/passes/pass_manager.h"
 #include "self_compiler/passes/recognize_onnx_ops_pass.h"
@@ -60,6 +61,7 @@ self_compiler::Status CompilerApp::Run(const RunOptions& options, std::ostream& 
     pass_manager.AddPass(std::make_unique<passes::RecognizeOnnxOpsPass>());
     pass_manager.AddPass(std::make_unique<passes::LowerTransformerToRuntimePass>());
     pass_manager.AddPass(std::make_unique<passes::CanonicalizePass>());  // lowering 后再验证一次
+    pass_manager.AddPass(std::make_unique<passes::GraphPartitionPass>());  // 标记每个 op 的执行目标
     auto pass_status = pass_manager.Run(graph);
     if (!pass_status.ok) {
         return pass_status;

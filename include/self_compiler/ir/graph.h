@@ -89,6 +89,10 @@ inline void Graph::Dump(std::ostream& out) const {
         for (int value : op.outputs) {
             out << " T" << value;
         }
+        auto target_it = op.attributes.find("exec_target");
+        if (target_it != op.attributes.end()) {
+            out << " [" << target_it->second << "]";
+        }
         out << "\n";
     }
 }
