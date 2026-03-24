@@ -40,6 +40,10 @@ struct MemoryPlan {
     std::vector<BufferAllocation> allocations;
     std::size_t total_bytes = 0;
     std::size_t peak_bytes = 0;
+    std::size_t sram_bytes = 0;
+    std::size_t dram_bytes = 0;
+    std::size_t flash_bytes = 0;
+    int sram_spill_count = 0;  // SRAM 溢出降级到 DRAM 的 tensor 数量
 };
 
 class MemoryPlanner {

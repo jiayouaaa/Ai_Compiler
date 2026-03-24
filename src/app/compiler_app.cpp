@@ -75,6 +75,13 @@ self_compiler::Status CompilerApp::Run(const RunOptions& options, std::ostream& 
 
     out << "\n==== 静态内存规划 ====\n";
     out << "total_bytes=" << plan.total_bytes << " peak_bytes=" << plan.peak_bytes << "\n";
+    out << "  SRAM:  " << plan.sram_bytes << " bytes\n";
+    out << "  DRAM:  " << plan.dram_bytes << " bytes\n";
+    out << "  FLASH: " << plan.flash_bytes << " bytes\n";
+    if (plan.sram_spill_count > 0) {
+        out << "  [警告] " << plan.sram_spill_count
+            << " 个 tensor 因 SRAM 容量不足被降级到 DRAM\n";
+    }
     for (const auto& alloc : plan.allocations) {
         out << "  " << alloc.tensor_name << " " << memory::ToString(alloc.region)
             << " offset=" << alloc.offset

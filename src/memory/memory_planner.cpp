@@ -9,6 +9,7 @@ namespace self_compiler::memory {
 namespace {
 
 constexpr std::size_t kSramThresholdBytes = 256 * 1024;
+constexpr std::size_t kSramCapacityBytes = 256 * 1024;  // Ethos-U55 SRAM 硬件上限
 
 // 判断两个 live interval 的生命周期是否重叠
 // 重叠的 tensor 不能共享内存，不重叠的可以
@@ -119,13 +120,72 @@ MemoryPlan MemoryPlanner::BuildPlan(
         region_state.blocks.push_back({allocs[idx].offset, interval.bytes, &interval});
     }
 
-    // 组装结果（按 tensor_id 顺序输出，和原来一致）
+    // SRAM 溢出检测：如果 SRAM 用量超过硬件限制，把最大的 SRAM tensor 降级到 DRAM
+    // 反复降级直到 SRAM 用量在限制内
+    int spill_count = 0;
+    while (region_states[RegionIndex(MemoryRegion::kSram)].high_watermark > kSramCapacityBytes) {
+        // 在当前 SRAM 分配中找最大的 tensor 降级
+        std::size_t largest_idx = SIZE_MAX;
+        std::size_t largest_bytes = 0;
+        for (std::size_t i = 0; i < allocs.size(); ++i) {
+            if (allocs[i].region == MemoryRegion::kSram && allocs[i].size_in_bytes > largest_bytes) {
+                largest_bytes = allocs[i].size_in_bytes;
+                largest_idx = i;
+            }
+        }
+        if (largest_idx == SIZE_MAX) break;  // 没有 SRAM tensor 可降级
+
+        // 降级到 DRAM
+        allocs[largest_idx].region = MemoryRegion::kDram;
+        ++spill_count;
+
+        // 重新计算所有区域（简单做法：清空并重建）
+        for (auto& state : region_states) {
+            state.blocks.clear();
+            state.high_watermark = 0;
+        }
+        for (std::size_t idx : order) {
+            const auto& interval = intervals[idx];
+            const MemoryRegion region = allocs[idx].region;
+            RegionState& rs = region_states[RegionIndex(region)];
+
+            std::size_t best_offset = 0;
+            bool found_reuse = false;
+            std::size_t best_waste = SIZE_MAX;
+
+            const bool allow_reuse = region != MemoryRegion::kFlash;
+            for (const auto& block : rs.blocks) {
+                if (allow_reuse && block.size >= interval.bytes &&
+                    !Overlaps(*block.interval, interval)) {
+                    std::size_t waste = block.size - interval.bytes;
+                    if (waste < best_waste) {
+                        best_waste = waste;
+                        best_offset = block.offset;
+                        found_reuse = true;
+                    }
+                }
+            }
+
+            if (found_reuse) {
+                allocs[idx].offset = best_offset;
+            } else {
+                allocs[idx].offset = rs.high_watermark;
+                rs.high_watermark += interval.bytes;
+            }
+
+            rs.blocks.push_back({allocs[idx].offset, interval.bytes, &interval});
+        }
+    }
+
+    // 组装结果
     MemoryPlan plan;
     plan.allocations = std::move(allocs);
-    for (const auto& state : region_states) {
-        plan.total_bytes += state.high_watermark;
-        plan.peak_bytes += state.high_watermark;
-    }
+    plan.sram_bytes = region_states[RegionIndex(MemoryRegion::kSram)].high_watermark;
+    plan.dram_bytes = region_states[RegionIndex(MemoryRegion::kDram)].high_watermark;
+    plan.flash_bytes = region_states[RegionIndex(MemoryRegion::kFlash)].high_watermark;
+    plan.total_bytes = plan.sram_bytes + plan.dram_bytes + plan.flash_bytes;
+    plan.peak_bytes = plan.total_bytes;
+    plan.sram_spill_count = spill_count;
 
     return plan;
 }
