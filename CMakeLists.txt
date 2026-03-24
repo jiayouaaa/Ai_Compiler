@@ -24,6 +24,7 @@ add_library(self_compiler_core
     src/memory/memory_planner.cpp
     src/backend/command_stream.cpp
     src/backend/toy_backend.cpp
+    src/backend/ethosu_backend.cpp
     src/app/compiler_app.cpp
     src/mlir/mlir_bridge_stub.cpp
 )

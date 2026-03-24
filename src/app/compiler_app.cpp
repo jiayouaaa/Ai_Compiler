@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "self_compiler/backend/ethosu_backend.h"
 #include "self_compiler/backend/toy_backend.h"
 #include "self_compiler/frontend/importer_factory.h"
 #include "self_compiler/frontend/transformer_block_builder.h"
@@ -90,12 +91,18 @@ self_compiler::Status CompilerApp::Run(const RunOptions& options, std::ostream& 
             << " size=" << alloc.size_in_bytes << "\n";
     }
 
-    backend::ToyAcceleratorBackend backend;
-    auto command_stream = backend.Emit(graph, plan);
+    backend::ToyAcceleratorBackend toy_backend;
+    auto command_stream = toy_backend.Emit(graph, plan);
     if (options.dump_command_stream) {
         out << "\n==== Toy Backend 命令流 ====\n";
         command_stream.Dump(out);
     }
+
+    // Ethos-U55 NPU 命令流
+    backend::EthosUBackend ethosu_backend;
+    auto ethosu_stream = ethosu_backend.Emit(graph, plan);
+    out << "\n==== Ethos-U55 命令流 ====\n";
+    ethosu_stream.Dump(out);
 
     if (options.dump_mlir_stub) {
         mlir::MlirBridge bridge;
