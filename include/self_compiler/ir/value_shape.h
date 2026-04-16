@@ -28,6 +28,7 @@ enum class DataType {
     kBFloat16,
     kFloat32,
     kInt32,
+    kInt8,
     kUnknown,
 };
 
@@ -39,6 +40,8 @@ inline std::string ToString(DataType type) {
             return "f32";
         case DataType::kInt32:
             return "i32";
+        case DataType::kInt8:
+            return "i8";
         default:
             return "unknown";
     }

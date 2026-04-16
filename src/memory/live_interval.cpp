@@ -5,9 +5,11 @@ namespace self_compiler::memory {
 namespace {
 
 std::size_t EstimateTensorBytes(const ir::Tensor& tensor) {
-    std::size_t element_size = 2;
+    std::size_t element_size = 2;  // bf16 默认
     if (tensor.dtype == ir::DataType::kFloat32 || tensor.dtype == ir::DataType::kInt32) {
         element_size = 4;
+    } else if (tensor.dtype == ir::DataType::kInt8) {
+        element_size = 1;
     }
 
     std::size_t elements = 1;

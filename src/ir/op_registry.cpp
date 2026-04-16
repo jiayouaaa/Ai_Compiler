@@ -152,6 +152,18 @@ const OpRegistry& OpRegistry::Instance() {
         r.Register(OpKind::kSplit, {
             "Split", 1, -1, {}, {}, true});
 
+        // ================================================================
+        // KV Cache 算子
+        // ================================================================
+        r.Register(OpKind::kKVCacheWrite, {
+            "KVCacheWrite", 2, 1,   // inputs: [new_kv, cache], output: [updated_cache]
+            {},
+            {}, false});
+        r.Register(OpKind::kKVCacheRead, {
+            "KVCacheRead", 1, 1,    // input: [cache], output: [slice]
+            {},
+            {}, false});
+
         // kUnknown 不注册——查表返回 nullptr 时表示未识别算子
 
         return r;

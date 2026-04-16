@@ -47,6 +47,10 @@ enum class OpKind {
     kConcatenation,
     kSplit,
 
+    // ---- KV Cache 算子 ----
+    kKVCacheWrite,   // 把当前步的 K/V 写入 cache 的指定位置
+    kKVCacheRead,    // 从 cache 读取 [0:pos+1] 的完整历史
+
     // ---- 未识别 ----
     kUnknown,
 };
@@ -85,6 +89,8 @@ inline std::string ToString(OpKind kind) {
         case OpKind::kPad:               return "Pad";
         case OpKind::kConcatenation:     return "Concatenation";
         case OpKind::kSplit:             return "Split";
+        case OpKind::kKVCacheWrite:      return "KVCacheWrite";
+        case OpKind::kKVCacheRead:       return "KVCacheRead";
         default:                         return "Unknown";
     }
 }

@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmake --preset core-debug)",
+      "Bash(cmake --build --preset build-core-debug)",
+      "Bash(rm -rf D:/Ai_infra/llama3/self_compiler/build/core-debug-mingw)",
+      "Bash(cmake --preset core-debug -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++)",
+      "Bash(ctest --test-dir build/core-debug-mingw --output-on-failure)",
+      "Bash(D:/Ai_infra/llama3/self_compiler/build/core-debug-mingw/shape_inference_test.exe *)",
+      "Bash(cmake --preset core-debug -DCMAKE_CXX_COMPILER=g++)",
+      "Bash(./memory_planner_test.exe)",
+      "Bash(./quantize_test.exe)",
+      "Bash(./tiling_test.exe)",
+      "Bash(./kv_cache_test.exe)"
+    ]
+  }
+}

@@ -14,6 +14,7 @@
 #include "self_compiler/passes/lower_transformer_to_runtime_pass.h"
 #include "self_compiler/passes/pass_manager.h"
 #include "self_compiler/passes/recognize_onnx_ops_pass.h"
+#include "self_compiler/passes/shape_inference_pass.h"
 
 namespace self_compiler::app {
 
@@ -60,7 +61,9 @@ self_compiler::Status CompilerApp::Run(const RunOptions& options, std::ostream& 
     passes::PassManager pass_manager;
     pass_manager.AddPass(std::make_unique<passes::CanonicalizePass>());
     pass_manager.AddPass(std::make_unique<passes::RecognizeOnnxOpsPass>());
+    pass_manager.AddPass(std::make_unique<passes::ShapeInferencePass>());  // 校验高层图 shape
     pass_manager.AddPass(std::make_unique<passes::LowerTransformerToRuntimePass>());
+    pass_manager.AddPass(std::make_unique<passes::ShapeInferencePass>());  // 校验/推导 lowered 子 op shape
     pass_manager.AddPass(std::make_unique<passes::CanonicalizePass>());  // lowering 后再验证一次
     pass_manager.AddPass(std::make_unique<passes::GraphPartitionPass>());  // 标记每个 op 的执行目标
     auto pass_status = pass_manager.Run(graph);

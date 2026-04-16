@@ -20,6 +20,9 @@ add_library(self_compiler_core
     src/passes/recognize_onnx_ops_pass.cpp
     src/passes/graph_partition_pass.cpp
     src/passes/lower_transformer_to_runtime_pass.cpp
+    src/passes/shape_inference_pass.cpp
+    src/passes/quantize_pass.cpp
+    src/passes/tiling_pass.cpp
     src/memory/live_interval.cpp
     src/memory/memory_planner.cpp
     src/backend/command_stream.cpp
@@ -52,3 +55,23 @@ target_link_libraries(self_compiler_cli PRIVATE self_compiler_core)
 
 enable_testing()
 add_test(NAME self_compiler_smoke COMMAND self_compiler_cli --mode demo)
+
+add_executable(shape_inference_test tests/shape_inference_test.cpp)
+target_link_libraries(shape_inference_test PRIVATE self_compiler_core)
+add_test(NAME shape_inference_test COMMAND shape_inference_test)
+
+add_executable(memory_planner_test tests/memory_planner_test.cpp)
+target_link_libraries(memory_planner_test PRIVATE self_compiler_core)
+add_test(NAME memory_planner_test COMMAND memory_planner_test)
+
+add_executable(quantize_test tests/quantize_test.cpp)
+target_link_libraries(quantize_test PRIVATE self_compiler_core)
+add_test(NAME quantize_test COMMAND quantize_test)
+
+add_executable(tiling_test tests/tiling_test.cpp)
+target_link_libraries(tiling_test PRIVATE self_compiler_core)
+add_test(NAME tiling_test COMMAND tiling_test)
+
+add_executable(kv_cache_test tests/kv_cache_test.cpp)
+target_link_libraries(kv_cache_test PRIVATE self_compiler_core)
+add_test(NAME kv_cache_test COMMAND kv_cache_test)
