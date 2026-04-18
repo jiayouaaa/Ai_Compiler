@@ -34,7 +34,13 @@ Testing/
 .vs/
 .vscode/
 .idea/
+.claude/
 CMakeUserPresets.json
+
+# Hello FVP build artifacts
+/scripts/hello_fvp/*.elf
+/scripts/hello_fvp/*.map
+/scripts/hello_fvp/*.o
 
 # Generated or temporary model files.
 # Keep intentional small example models explicit.
